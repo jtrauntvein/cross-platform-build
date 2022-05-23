@@ -1,0 +1,27 @@
+{
+  "name": "jon-make",
+  "version": "1.0.0",
+  "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "src/cli.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtrauntvein/jon-make.git"
+  },
+  "keywords": [
+    "make",
+    "nmake"
+  ],
+  "author": "Jon Trauntvein",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/jtrauntvein/jon-make/issues"
+  },
+  "homepage": "https://github.com/jtrauntvein/jon-make#readme",
+  "devDependencies": {
+    "eslint": "^8.16.0"
+  }
+}
