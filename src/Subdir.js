@@ -11,28 +11,31 @@ function subdir({
    name,
    options = {}
 }) {
-   const current_path = process.cwd();
-   const sub_path = path.join(current_path, name);
-   const subdir_options = {
-      ...options,
-      target_prefix: name,
-      target_path: sub_path
-   };
-   const subdir_makefile_name = options.makefile_name ?? "makefile.js";
-   const subdir_makefile_path = path.join(sub_path, subdir_makefile_name);
-   if(fs.existsSync(subdir_makefile_path))
-   {
-      try {
+   return new Promise((accept, reject) => {
+      const current_path = process.cwd();
+      const sub_path = path.join(current_path, name);
+      const subdir_options = {
+         ...options,
+         target_prefix: name,
+         target_path: sub_path
+      };
+      const subdir_makefile_name = options.makefile_name ?? "makefile.js";
+      const subdir_makefile_path = path.join(sub_path, subdir_makefile_name);
+      if(fs.existsSync(subdir_makefile_path))
+      {
          const subdir_module = require(subdir_makefile_path);
          process.chdir(sub_path);
-         subdir_module(subdir_options);
+         Promise.resolve(subdir_module(subdir_options)).then(() => {
+            process.chdir(current_path);
+            accept();
+         }).catch((error) => {
+            process.chdir(current_path);
+            reject(error);
+         });
       }
-      finally {
-         process.chdir(current_path);
-      }
-   }
-   else
-      throw Error(`cannot find subdir makefile: ${subdir_makefile_path}`);
+      else
+         reject(Error(`makefile.js not found in subdir "${sub_path}`));
+   });
 }
 
 

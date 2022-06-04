@@ -19,15 +19,17 @@ async function execute() {
 
          // we can now load the makefile module and invoke it to add its targets
          const makefile_module = require(path.join(process.cwd(), project_file));
-         makefile_module({});
-
-         // now, we can evaluate the targets that need to be built.  Evaluate will do this and build any of those
-         // target dependencies.
-         Target.evaluate(targets).then(() => {
-            accept();
+         Promise.resolve(makefile_module({})).then(() => {
+            // now, we can evaluate the targets that need to be built.  Evaluate will do this and build any of those
+            // target dependencies.
+            Target.evaluate(targets).then(() => {
+               accept();
+            }).catch((error) => {
+               reject(error);
+            });
          }).catch((error) => {
             reject(error);
-         })
+         });
       }
       catch(error)
       { reject(error); }

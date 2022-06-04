@@ -6,8 +6,8 @@ const Subdir = require("./Subdir");
 
 module.exports = {
    Target,
-   Execute,
-   MakeCDecl,
-   Subdir
+   execute: Execute.execute,
+   make_cdecl: MakeCDecl.make_cdecl,
+   subdir: Subdir.subdir
 };
 
