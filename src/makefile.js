@@ -1,19 +1,21 @@
 const MakeCDecl = require("./MakeCDecl");
+const PickDirTargets = require("./PickDirTargets");
 
-module.exports = function(options) {
-   MakeCDecl.make_cdecl({
-      name: "src/index.js.h",
-      input: "index.js",
-      output: "index.js.h",
-      variable_name: "index_js",
-      options
-   });
-   MakeCDecl.make_cdecl({
-      name: "src/MakeCDecl.js.h",
-      input: "MakeCDecl.js",
-      output: "MakeCDecl.js.h",
-      variable_name: "mkcdecl_js",
-      depends: [ "src/index.js.h" ],
-      options
+module.exports = async function(options) {
+   const match_js = /\.js$/;
+   await PickDirTargets.pick_dir_targets({
+      options,
+      filter: (file) => {
+         if(file.isFile() && file.name.match(match_js))
+         {
+            MakeCDecl.make_cdecl({
+               name: `src/${file.name}.h`,
+               input: file.name,
+               output: `${file.name}.h`,
+               variable_name: file.name.replace(".", "_"),
+               options
+            });
+         }
+      }
    });
 };
