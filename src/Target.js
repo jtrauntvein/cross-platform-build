@@ -5,10 +5,15 @@
 const all_targets = {};
 
 /**
+ * @typedef TargetOptionsType
+ * @property {string=undefined} target_path Specifies the path from which the target should be evaluated
+ */
+/**
  * @typedef TargetType
  * @property {string} name Specifies the name of the target
  * @property {string[]} depends Specifies the names of the targets on which this target depends.
  * @property {Promise} action Specifies the action that should be taken to build the target.
+ * @property {object={}} options Specifies the execution options for this task (such as target_prefix)
  */
 /**
  * @description Constructor for a basic make target
@@ -17,9 +22,10 @@ const all_targets = {};
 function target({
    name,
    depends =  [],
-   action = new Promise((accept) => { accept(); })
+   options = {},
+   action = function() {}
 }) {
-   const rtn = { name, depends, action };
+   const rtn = { name, depends, action, options };
    all_targets[rtn.name] = rtn;
    return rtn;
 }
@@ -67,26 +73,36 @@ async function evaluate(target_names = []) {
 
       // We now have the targets arranged in the order that they need to be executed in order to satisify dependencies.
       // we can use this to create the list of promises that must be executed.
-      const promises = required.map((target) => {
-         return new Promise((accept_action, reject_action) => {
-            Promise.resolve(target.action()).then(() => {
-               accept_action(target);
-            }).catch((error) => {
-               reject_action(error);
+      let task_chain = Promise.resolve();
+      required.forEach((target) => {
+         task_chain = task_chain.then(() => {
+            return new Promise((accept_action, reject_action) => {
+               const current_dir = process.cwd();
+               if(target.options.target_path)
+                  process.chdir(target.options.target_path);
+               Promise.resolve(target.action()).then(() => {
+                  if(target.options.target_path)
+                     process.chdir(current_dir);
+                  accept_action(target);
+               }).catch((error) => {
+                  if(target.options.target_path)
+                     process.chdir(current_dir);
+                  reject_action(error);
+               });
             });
-         });
+         })
       });
-      Promise.all(promises).then((results) => {
+      task_chain.then((results) => {
          accept(results);
       }).catch((error) => {
          reject(error);
-      });
-      
+      })
    });
 }
 
 
 module.exports = {
    target,
-   evaluate
+   evaluate,
+   all_targets
 };

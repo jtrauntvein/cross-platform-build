@@ -71,6 +71,8 @@ async function do_mkcdecl() {
                   reject(Error(`failed to read input: ${error}`));
             });
          }
+         else
+            accept();
       }
       else
          reject(Error(`input file ${this.input} does not exist or is not a file`));
@@ -88,7 +90,8 @@ async function do_mkcdecl() {
  * @param {string} options.input Specifies the input file name.
  * @param {string} options.output Specifies the output file name.
  * @param {string} options.variable_name Specifies the name of the variable to declared.
- * @param {string} options.namespaces Specifies the namespace names in which the variable will be declared.
+ * @param {string=[]} options.namespaces Specifies the namespace names in which the variable will be declared.
+ * @param {object={}} options.options Specifies the execution options for the target
  */
 function make_cdecl({
    name,
@@ -96,12 +99,14 @@ function make_cdecl({
    input,
    output,
    variable_name,
-   namespaces = []
+   namespaces = [],
+   options = {}
 }) {
    const rtn = Target.target({
       name,
       depends,
-      action: do_mkcdecl
+      action: do_mkcdecl,
+      options
    });
    rtn.input = input;
    rtn.output = output;

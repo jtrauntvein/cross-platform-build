@@ -4,12 +4,13 @@ const Target = require("./Target");
 /**
  * Implements the code that executes the child process.
  */
-async function do_execute() {
+async function do_execute(options) {
    return new Promise((accept, reject) => {
       const process = child_process.spawn(this.program_name, this.args, { 
          stdio: "inherit",
          cwd: this.cwd,
-         shell: this.shell
+         shell: this.shell,
+         options
       });
       process.on("close", (exit_code) => {
          if(this.ignore_exit_code || exit_code === 0)

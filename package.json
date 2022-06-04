@@ -4,7 +4,7 @@
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node src/cli.js src/MakeCDecl.js.h"
   },
   "bin": "src/cli.js",
   "repository": {
@@ -23,5 +23,9 @@
   "homepage": "https://github.com/jtrauntvein/jon-make#readme",
   "devDependencies": {
     "eslint": "^8.16.0"
+  },
+  "dependencies": {
+    "commander": "^9.3.0",
+    "prompts": "^2.4.2"
   }
 }
