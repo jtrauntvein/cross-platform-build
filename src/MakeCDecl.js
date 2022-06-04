@@ -82,7 +82,9 @@ async function do_mkcdecl() {
 
 /**
  * Defines a task type that will convert the contents of any file into a "C++" array declaration of an array of
- * unsigned characters.
+ * unsigned characters.  The output file will be generated from the contents of the input file and will only 
+ * be rewritten if the output file does not exist or if the last modified stamp for the input file is greater than the
+ * last modified stamp of the output file.
  * 
  * @return {object} Returns the object created for doing the process.
  * @param {string} options.name Specifies the name of this target
