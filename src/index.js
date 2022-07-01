@@ -8,6 +8,7 @@ const MsBuild = require("./MsBuild");
 
 module.exports = {
    Target,
+   target: Target.target,
    execute: Execute.execute,
    make_cdecl: MakeCDecl.make_cdecl,
    subdir: Subdir.subdir,
