@@ -154,6 +154,33 @@ The http_request() function generates a target that will invoke an HTTP based se
 The return value of this function will be the object that is created the track the state of the target.
 
 
+#### 3.1.6 - pull_docker_container()
+
+The pull_docker_container() function generates a target that will run docker in a child process in order to pull a remote docker container image.
+
+ The arguments for this function are as follows:
+
+* name (string, required): Specifies the name of the target
+* depends (string[], optional) Specifies the names of targets that must be built before this target.
+* image (string, required): Specifies the URL for the container to pull.
+* env (string[], optional): Specifies environment variables that must be defined while pulling the docker image.
+* options (object, optional): Specifies the options that are generated when the target is built as a part of sub-project.
+
+
+#### 3.1.7 - docker_container()
+
+The docker_container() function generates a target that will run a targetting process within a docker container.  The working directory for the target will be mounted as a volume within the docker container.  The options for this function are as follows:
+
+* name (string, required): Specifies the name of the target.
+* depends (string, optional): Specifies the names of targets that must be built before this target.
+* image (string, required): Specifies the URL for the docker docker container image
+* entry_point (string, required): Specifies the program that will be run within the container.
+* entry_point_argv (string[], optional): Specifies the command line arguments that will be sent to the entry point process.
+* mount_point (string, optional): Specifies the path within the docker container where the target working directory will be mounted.
+* cwd (string, optional): Specifies the host directory where the container should be run.
+* env (string[], optional): Specifies the environment variables that should be defined within the docker container.
+* options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
+
 
 ### 3.2 - Helper Functions
 
