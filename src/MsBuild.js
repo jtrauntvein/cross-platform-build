@@ -4,12 +4,13 @@ const Execute = require("./Execute");
  * @typedef MsBuildOptionsType
  * @property {string} name Specifies the target name
  * @property {Array<string> = []} depends Specifies the target names upon which the generated target will depend.
- * @property {Object={}} options Specifies target options.  If the makefile.js exported function is passed an options
- * parameter, that parameter must be passed for this value.
  * @property {string} project_file Specifies the name of the project file
  * @property {string?} cwd Specifies the directory from which the project should be built.
  * @property {string?} platform Specifies the platform identifier ("x86" or "x64").  If not specified, the default platform will be used.
  * @property {string="Release"} config Specifies the build configuration to be built.
+ * @property {string[] = []} msbuild_options Specifies any other command line arguments that should be passed to msbuild.
+ * @property {Object={}} options Specifies target options.  If the makefile.js exported function is passed an options
+ * parameter, that parameter must be passed for this value.
  */
 /**
  * @description Generates a target that will invoke the visual studio build tool (msbuild) with a specified configuration and optional
@@ -19,15 +20,17 @@ const Execute = require("./Execute");
 async function make_msbuild({
    name,
    depends = [],
-   options = {},
    project_file,
    cwd = undefined,
    platform = undefined,
-   config = "Release"
+   config = "Release",
+   msbuild_options = [],
+   options = {}
 }) {
    const msbuild_args = [
       project_file,
-      `/p:Configuration=${config}`
+      `/p:Configuration=${config}`,
+      ...msbuild_options
    ];
    if(platform)
       msbuild_args.push(`/p:Platform=${platform}`);

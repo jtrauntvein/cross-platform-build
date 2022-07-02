@@ -38,6 +38,7 @@ async function do_execute(options) {
  * @param {string[] = []} options.env Specifies the environment variables for the child process.
  * @param {boolean | string = false} options.shell Set to true if the process is to be run within a shell.  Set to a string to
  * specify the shell.
+ * @param {object?} options.options Specifies the options object that is created when this target is generated within a sub-project.
  */
 function execute({
    name,
@@ -47,12 +48,14 @@ function execute({
    argv,
    cwd = process.cwd(),
    env = process.env,
-   shell = false
+   shell = false,
+   options = {}
 }) {
    const rtn = Target.target({
       name,
       depends,
-      action: do_execute
+      action: do_execute,
+      options
    });
    rtn.program_name = program_name;
    rtn.argv = argv;
