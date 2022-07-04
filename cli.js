@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { program: parser } = require("Commander");
-const Target = require("./Target");
+const Target = require("./src/Target");
 
 
 async function execute() {

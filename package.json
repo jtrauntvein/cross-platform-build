@@ -1,12 +1,12 @@
 {
   "name": "cross-platform-build",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node src/cli.js src/MakeCDecl.js.h"
+    "test": "node ./cli.js src/MakeCDecl.js.h"
   },
-  "bin": "src/cli.js",
+  "bin": "./cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jtrauntvein/cross-platform-build.git"
