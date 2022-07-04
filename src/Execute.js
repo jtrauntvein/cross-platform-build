@@ -92,7 +92,7 @@ async function do_execute(options) {
  * or one or more of the inputs has a newer last changed stamp.
  * @param {object?} options.options Specifies the options object that is created when this target is generated within a sub-project.
  */
-function execute({
+async function execute({
    name,
    depends = [],
    ignore_exit_code = false,
@@ -104,7 +104,7 @@ function execute({
    check_inputs = undefined,
    options = {}
 }) {
-   const rtn = Target.target({
+   const rtn = await Target.target({
       name,
       depends,
       action: do_execute,

@@ -5,10 +5,10 @@ module.exports = async function(options) {
    const match_js = /\.js$/;
    await PickDirTargets.pick_dir_targets({
       options,
-      filter: (file) => {
+      filter: async (file) => {
          if(file.isFile() && file.name.match(match_js))
          {
-            MakeCDecl.make_cdecl({
+            await MakeCDecl.make_cdecl({
                name: `src/${file.name}.h`,
                input: file.name,
                output: `${file.name}.h`,

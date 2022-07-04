@@ -95,7 +95,7 @@ async function do_mkcdecl() {
  * @param {string=[]} options.namespaces Specifies the namespace names in which the variable will be declared.
  * @param {object={}} options.options Specifies the execution options for the target
  */
-function make_cdecl({
+async function make_cdecl({
    name,
    depends = [],
    input,
@@ -104,7 +104,7 @@ function make_cdecl({
    namespaces = [],
    options = {}
 }) {
-   const rtn = Target.target({
+   const rtn = await Target.target({
       name,
       depends,
       action: do_mkcdecl,

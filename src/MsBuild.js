@@ -34,13 +34,13 @@ async function msbuild({
    ];
    if(platform)
       msbuild_args.push(`/p:Platform=${platform}`);
-   return Execute.execute({
+   return await Execute.execute({
       name,
       depends,
       ignore_exit_code: false,
       program_name: "msbuild",
       cwd,
-      args: msbuild_args,
+      argv: msbuild_args,
       options
    });
 }

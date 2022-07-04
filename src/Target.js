@@ -19,7 +19,7 @@ const all_targets = {};
  * @description Constructor for a basic make target
  * @param {TargetType} options Specifies the options for this target
  */
-function target({
+async function target({
    name,
    depends =  [],
    options = {},

@@ -14,7 +14,7 @@ const Execute = require("./Execute");
  * @param {PullDockerContainerOptions} options Specifies the target options. 
  * @returns {object} Returns the object created to track the task status
  */
-function pull_docker_container({
+async function pull_docker_container({
    name,
    depends = [],
    image,
