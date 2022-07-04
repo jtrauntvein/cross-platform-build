@@ -1,30 +1,79 @@
 const child_process = require("node:child_process");
+const fs = require("node:fs");
+const path = require("node:path");
 const Target = require("./Target");
+
+async function do_check_inputs(check, cwd) {
+   return new Promise((accept) => {
+      if(typeof check === "object")
+      {
+         const sources = check.sources ?? [];
+         const outputs = check.outputs ?? [];
+         const source_stats = sources.map((input_name) => {
+            const input_path = path.join(cwd ?? ".", input_name);
+            return fs.statSync(input_path);
+         });
+         const output_stats = outputs.map((output_name) => {
+            const output_path = path.join(cwd ?? ".", output_name);
+            return fs.statSync(output_path);
+         });
+         const dirty = output_stats.find((output_stat) => {
+            let rtn = output_stat === undefined;
+            if(!rtn)
+            {
+               // the file will be considered dirt if the last changed stamp on the output is 
+               // less than any of the last changed stamps on any of the inputs
+               const dirty_input = source_stats.find((source_stat) => {
+                  return source_stat === undefined || source_stat.ctime > output_stat.ctime;
+               });
+               return (dirty_input === undefined);
+            }
+            return rtn;
+         });
+         accept(dirty === undefined);
+      }
+      else
+         accept(true);
+   })
+}
+
 
 /**
  * Implements the code that executes the child process.
  */
 async function do_execute(options) {
    return new Promise((accept, reject) => {
-      const process = child_process.spawn(this.program_name, this.argv, { 
-         stdio: "inherit",
-         cwd: this.cwd,
-         shell: this.shell,
-         options
-      });
-      process.on("close", (exit_code) => {
-         if(this.ignore_exit_code || exit_code === 0)
-            accept();
+      do_check_inputs(this.check_inputs, this.cwd).then((dirty) => {
+         if(dirty)
+         {
+            const process = child_process.spawn(this.program_name, this.argv, { 
+               stdio: "inherit",
+               cwd: this.cwd,
+               shell: this.shell,
+               options
+            });
+            process.on("close", (exit_code) => {
+               if(this.ignore_exit_code || exit_code === 0)
+                  accept();
+               else
+                  reject(Error(`${this.program_name} exited with ${exit_code}`));
+            });
+            process.on("error", (error) => {
+               reject(`failed to launch program: ${error}`);
+            });
+         }
          else
-            reject(Error(`${this.program_name} exited with ${exit_code}`));
-      });
-      process.on("error", (error) => {
-         reject(`failed to launch program: ${error}`);
+            accept();
       });
    });
 }
 
 
+/**
+ * @typedef CheckInputsType
+ * @property {string[]} sources Specifies the collection of input files.
+ * @property {string[]} outputs Specifies the collection of outputs.
+ */
 /**
  * Defines a target type that executes a child process.
  * @return {object} Returns the data for the target.
@@ -38,6 +87,9 @@ async function do_execute(options) {
  * @param {string[] = []} options.env Specifies the environment variables for the child process.
  * @param {boolean | string = false} options.shell Set to true if the process is to be run within a shell.  Set to a string to
  * specify the shell.
+ * @param {CheckInputsType?} options.check_inputs Specifies the collection of input and output files that are checked before running the
+ * child process.  If this argument is specified, the child process will not be run unless one or more of the outputs do not exist
+ * or one or more of the inputs has a newer last changed stamp.
  * @param {object?} options.options Specifies the options object that is created when this target is generated within a sub-project.
  */
 function execute({
@@ -49,6 +101,7 @@ function execute({
    cwd = process.cwd(),
    env = process.env,
    shell = false,
+   check_inputs = undefined,
    options = {}
 }) {
    const rtn = Target.target({
@@ -63,6 +116,7 @@ function execute({
    rtn.cwd = cwd;
    rtn.env = env;
    rtn.shell = shell;
+   rtn.check_inputs = check_inputs;
    return rtn;
 }
 

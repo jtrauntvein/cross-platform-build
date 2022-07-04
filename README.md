@@ -100,6 +100,12 @@ The execute() function returns a target that will invoke a child process.  The p
 * env (string[], optional): Specifies a collection of environment variables that can be defined for the child process.
 * shell (boolean, optional): Set to true if the child process should be run within a shell.
 * ignore_exit_code (boolean, optional): Set to true if the exit code for the child process should be ignored.
+* check_inputs (object, optional): Optionally specifies properties "sources" and "outputs" which should both be an array of strings.
+  the "sources" property identifies the list of file names (with paths relative to the target working dir) that are operated upon
+  and the "outputs" property also identifies a list of file names (with paths relative to the target working dir) that are expected
+  to be output by the process.  If any of the expected inputs are missing or have last changed time stamps that are newer than 
+  any of the outputs, then the target program will be run.  If not, the target program will not be run.  If this parameter is not specified,
+  the target program will be run unconditionally.
 * options (object, optional): Specifies the options structure that is created when this target type is built within a sub-project.
 
 The return value for this function will be the object that is generated to track the state of the task.
