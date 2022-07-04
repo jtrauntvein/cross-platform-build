@@ -11,11 +11,11 @@ async function do_check_inputs(check, cwd) {
          const outputs = check.outputs ?? [];
          const source_stats = sources.map((input_name) => {
             const input_path = path.join(cwd ?? ".", input_name);
-            return fs.statSync(input_path);
+            return fs.statSync(input_path, { throwIfNoEntry: false });
          });
          const output_stats = outputs.map((output_name) => {
             const output_path = path.join(cwd ?? ".", output_name);
-            return fs.statSync(output_path);
+            return fs.statSync(output_path, { throwIfNoEntry: false });
          });
          const dirty = output_stats.find((output_stat) => {
             let rtn = output_stat === undefined;
