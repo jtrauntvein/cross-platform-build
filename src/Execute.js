@@ -6,7 +6,7 @@ const Target = require("./Target");
  */
 async function do_execute(options) {
    return new Promise((accept, reject) => {
-      const process = child_process.spawn(this.program_name, this.args, { 
+      const process = child_process.spawn(this.program_name, this.argv, { 
          stdio: "inherit",
          cwd: this.cwd,
          shell: this.shell,
