@@ -17,7 +17,7 @@ const Execute = require("./Execute");
  * platform.
  * @param {MsBuildOptionsType} options Specifies the options for the target.
  */
-async function make_msbuild({
+async function msbuild({
    name,
    depends = [],
    project_file,
@@ -47,5 +47,5 @@ async function make_msbuild({
 
 
 module.exports = {
-   make_msbuild
+   msbuild
 };
