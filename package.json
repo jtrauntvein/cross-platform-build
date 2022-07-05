@@ -1,10 +1,10 @@
 {
   "name": "cross-platform-build",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node ./cli.js src/MakeCDecl.js.h"
+    "test": "node ./cli.js"
   },
   "bin": "./cli.js",
   "repository": {
