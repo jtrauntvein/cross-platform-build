@@ -22,7 +22,7 @@ const all_targets = {};
 async function target({
    name,
    depends =  [],
-   options = {},
+   options = { },
    action = function() {}
 }) {
    const rtn = { name, depends, action, options };
@@ -57,8 +57,9 @@ function pick_target_and_dependencies(target_name, picked) {
  * @description Called to evaluate the specified targets. 
  * @param {string[]=[]} target_names Specifies the targets to evaluate. If not specified or specified as an empty array (the default),
  * all declared targets will be evaluated.
+ * @param {Pino} logger Specifies the logging module. 
  */
-async function evaluate(target_names = []) {
+async function evaluate(target_names = [], logger) {
    return new Promise((accept, reject) => {
       // For every target that can be found in the specified list, we will select that target but first select any dependencies.
       const target_keys = Object.keys(all_targets);
@@ -80,6 +81,7 @@ async function evaluate(target_names = []) {
                const current_dir = process.cwd();
                if(target.options.target_path)
                   process.chdir(target.options.target_path);
+               logger.info(`building task ${target.name}`);
                Promise.resolve(target.action()).then(() => {
                   if(target.options.target_path)
                      process.chdir(current_dir);
@@ -87,6 +89,7 @@ async function evaluate(target_names = []) {
                }).catch((error) => {
                   if(target.options.target_path)
                      process.chdir(current_dir);
+                  logger.error(Error(`build action ${target.name} failed: ${error}`));
                   reject_action(error);
                });
             });

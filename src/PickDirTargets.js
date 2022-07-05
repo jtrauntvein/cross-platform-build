@@ -17,20 +17,9 @@ async function pick_dir_targets({
    options,
    filter
 }) {
-   return new Promise((accept, reject) => {
-      fs.readdir(process.cwd(), {withFileTypes: true}).then((files) => {
-         for(let file of files)
-         {
-            Promise.resolve(filter(file, options)).then((filter_accept) => {
-               filter_accept(true);
-            });
-         }
-      }).then(() => {
-         accept(true);
-      }).catch((error) => {
-         reject(error);
-      });
-   });
+   const files = await fs.readdir(process.cwd(), {withFileTypes: true});
+   for(let file of files)
+      await Promise.resolve(filter(file, options));
 }
 
 
