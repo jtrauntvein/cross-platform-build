@@ -188,6 +188,46 @@ The docker_container() function generates a target that will run a targetting pr
 * options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
 
 
+#### 3.1.8 mk_dir()
+
+The mk_dir() function generates a target that will ensure the existence of a directory for a given path and will create any parent directories for that path as necessary.  The options for this function are as follows:
+
+* name (string, required): Specifies the name of the target to be created.
+* depends (string[], optional): Specifies the names of targets that must be built before this target is built.
+* path (string, required): Specifies the path for the directory to be created if needed.  If the directory already exists, the target will still be considered a success.
+* options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
+
+The return value from this function will be the object that was created to track the status of the target.
+
+
+#### 3.1.9 copy_file()
+
+The copy_file() function generates a target that will copy one or more files to a given directory and will also clone the created time and last modified time for the copied files.  The parameters for this function are as follows:
+
+* name (string, required): Specifies the name for the generated target.
+* depends (string[], optional): Specifies the names of targets that must be built before this target is built.
+* source (string or string[], required): Specifies the path to the source file to be copied or, if specified as an array, will specify the paths of the source files to be copied.
+* dest (string, required): Specifies the directory to which the source files will be copied.
+* options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
+
+The return value from this function will be the object that was created to track the target.
+
+
+#### 3.1.10 rsync()
+
+The rsync() function will generate a target that will use the rsyncjs node module to mirror the contents of a destination directory with the contents of a source directory.  The parameters for this function are as follows:
+
+* name (string, required): Specifies the name of the target.
+* depends (string[], optional): Specifies the names of targets that must be built before this target is built.
+* source (string, required): Specifies the path of the source directory to be mirrored to the destination directory.
+* dest (string, required): Specifies the path of the destination directory that will be modified to mirror the source directory.
+* delete_orphaned (boolean, optional): Set to true (the default) if any contents of the destination directory exist that are not in the source directory should be deleted from the destination directory.
+* filter (string or string[] or regex or function, optional): Specifies a callback function or pattern(s) that will be used by the rsyncjs module to determine what files and/or directories should be considered.
+* options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
+
+The return value from this function will be the object used to track the target.
+
+
 ### 3.2 - Helper Functions
 
 The cross-platform-build package also provides two helper functions that, while they do not directly generate any targets themselves, are useful for incorporating a sub-project or for dynamically selecting contents from a directory.  These functions are as follows:

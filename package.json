@@ -1,6 +1,6 @@
 {
   "name": "cross-platform-build",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
@@ -22,12 +22,13 @@
   },
   "homepage": "https://github.com/jtrauntvein/cross-platform-build#readme",
   "devDependencies": {
-    "eslint": "^8.16.0"
+    "eslint": "^8.19.0"
   },
   "dependencies": {
     "axios": "^0.27.2",
     "commander": "^9.3.0",
     "pino": "^8.1.0",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "rsyncjs": "^0.0.12"
   }
 }
