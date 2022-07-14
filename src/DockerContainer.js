@@ -22,7 +22,7 @@ async function pull_docker_container({
    options
    
 }) {
-   return Execute.execute({
+   return await Execute.execute({
       name,
       depends,
       options,
@@ -53,7 +53,7 @@ async function pull_docker_container({
  * @param {DockerContainerOptions} options Specifies the options to pass to the target 
  * @returns {object} Returns the object that is created to track the  target status.
  */
-function docker_container({
+async function docker_container({
    name,
    depends = [],
    image,
@@ -64,7 +64,7 @@ function docker_container({
    env = [],
    options = {}
 }) {
-   return Execute.execute({
+   return await Execute.execute({
       name,
       depends,
       options,

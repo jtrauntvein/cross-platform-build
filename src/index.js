@@ -6,9 +6,9 @@ const PickDirTargets = require("./PickDirTargets");
 const MsBuild = require("./MsBuild");
 const HttpRequest = require("./HttpRequest");
 const DockerContainer = require("./DockerContainer");
-const RSync = require("./RSynch");
 const CopyFile = require("./CopyFile");
 const MkDir = require("./MkDir");
+const RSync = require("./RSync");
 
 
 module.exports = {
