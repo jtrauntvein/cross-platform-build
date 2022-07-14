@@ -8,6 +8,9 @@ async function do_rsync() {
          deleteOrphaned: this.delete_orphaned,
          exclude: this.exclude,
          filter: this.filter,
+         onError: function(error) {
+            reject(error);
+         }
       }).then(() => {
          accept(true);
       }).catch((error) => {
@@ -49,7 +52,7 @@ async function rsync({
    });
    rtn.source = source;
    rtn.dest = dest;
-   rtn.delete_orphpaned = delete_orphaned;
+   rtn.delete_orphaned = delete_orphaned;
    rtn.exclude = exclude;
    rtn.filter = filter;
    return rtn;
