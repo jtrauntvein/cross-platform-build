@@ -9,7 +9,7 @@ async function do_rsync() {
          exclude: this.exclude,
          filter: this.filter,
          onError: function(error) {
-            reject(error);
+            this.reported_error = error;
          }
       }).then(() => {
          if(this.reported_error)
