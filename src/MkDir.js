@@ -25,7 +25,7 @@ async function mk_dir({
    path,
    options = {}
 }) {
-   const rtn = Target.target({
+   const rtn = await Target.target({
       name,
       depends,
       options,
