@@ -41,7 +41,7 @@ async function rsync({
    filter = undefined,
    options
 }) {
-   const rtn = Target.target({
+   const rtn = await Target.target({
       name,
       depends,
       options,
