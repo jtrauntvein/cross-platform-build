@@ -12,9 +12,10 @@ async function do_rsync() {
             reject(error);
          }
       }).then(() => {
-         accept(true);
-      }).catch((error) => {
-         reject(error);
+         if(this.reported_error)
+            reject(this.reported_error);
+         else
+            accept(true);
       });
    });
 }
@@ -55,6 +56,7 @@ async function rsync({
    rtn.delete_orphaned = delete_orphaned;
    rtn.exclude = exclude;
    rtn.filter = filter;
+   rtn.reported_error = null;
    return rtn;
 }
 
