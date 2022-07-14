@@ -40,7 +40,7 @@ async function copy_file({
    dest,
    options = {}
 }) {
-   const rtn = new Target.target({
+   const rtn = await Target.target({
       name,
       depends,
       options,
