@@ -1,6 +1,6 @@
 {
   "name": "cross-platform-build",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {

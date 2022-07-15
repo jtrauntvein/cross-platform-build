@@ -80,13 +80,13 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                                     ops.push({ op: "copy", source: source_path, dest: dest_path, ctime: source_stat.ctime, mtime: source_stat.mtime });
                               }
                               if(source_type === dest_type && source_type === 0)
-                                 ops.push({ op: "sync", source: source_path, dest: dest_path });
+                                 ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                               if(source_type !== dest_type)
                               {
                                  // we will first add an op to delete the directory and will then add an op 
                                  ops.push({ op: "rm", path: dest_path });
                                  if(source_type === 0)
-                                    ops.push({ op: "sync", source: source_path, dest: dest_path });
+                                    ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                                  if(source_type === 1)
                                     ops.push({ op: "copy", source: source_path, dest: dest_path });
                               }
@@ -94,7 +94,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                            else
                            {
                               if(source_stat.isDirectory())
-                                 ops.push({ op: "sync", source: source_path, dest: dest_path });
+                                 ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                               else if(source_stat.isFile())
                                  ops.push({ op: "copy", source: source_path, dest: dest_path, mtime: source_stat.mtimeMs, ctime: source_stat.ctimeMs });
                            }
