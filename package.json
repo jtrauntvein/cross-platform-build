@@ -1,6 +1,6 @@
 {
   "name": "cross-platform-build",
-  "version": "1.2.7",
+  "version": "1.2.11",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
@@ -28,7 +28,6 @@
     "axios": "^0.27.2",
     "commander": "^9.3.0",
     "pino": "^8.1.0",
-    "prompts": "^2.4.2",
-    "rsyncjs": "^0.0.12"
+    "prompts": "^2.4.2"
   }
 }
