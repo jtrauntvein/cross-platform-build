@@ -16,7 +16,7 @@ async function do_copy() {
       const dest_name = path.join(this.dest, file_name);
       const file_stat = await fs.stat(file);
       await fs.copyFile(file, dest_name);
-      await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file.mtime);
+      await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file_stat.mtime);
    }
 }
 
