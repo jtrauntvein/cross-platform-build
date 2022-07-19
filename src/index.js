@@ -24,6 +24,7 @@ module.exports = {
    pull_docker_container: DockerContainer.pull_docker_container,
    rsync: RSync.rsync,
    copy_file: CopyFile.copy_file,
-   mk_dir: MkDir.mk_dir
+   mk_dir: MkDir.mk_dir,
+   make_dir: MkDir.mk_dir
 };
 
