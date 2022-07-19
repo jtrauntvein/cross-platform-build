@@ -12,7 +12,7 @@ async function do_copy() {
    for(let i = 0; i < files_to_copy.length; ++i)
    {
       const file = files_to_copy[i];
-      const file_name = path.basename(file);
+      const file_name = (this.rename && files_to_copy.length === 1 ? this.rename : path.basename(file));
       const dest_name = path.join(this.dest, file_name);
       const file_stat = await fs.stat(file);
       await fs.copyFile(file, dest_name);
@@ -29,7 +29,9 @@ async function do_copy() {
  * before this target can be built.
  * @param {string | string[]} options.source Specifies the path of the source file or an array of source paths for files
  * to be copied
- * @param {string} options.dest Specifies the path to which the source(s) will be copied.
+ * @param {string} options.dest Specifies the path to the directory to which the source(s) will be copied.
+ * @param {string} options.rename Optionally specifies the name of the file in the destination directory.  This is only used when there is only one
+ * source name specified.
  * @param {object = {}} options.options Specifies the subproject options created when this target
  * is created within a sub-project.
  * @returns {object} Returns the object created to track the target.
@@ -39,6 +41,7 @@ async function copy_file({
    depends = [],
    source,
    dest,
+   rename = undefined,
    options = {}
 }) {
    const rtn = await Target.target({
@@ -49,6 +52,7 @@ async function copy_file({
    });
    rtn.source = source;
    rtn.dest = dest;
+   rtn.rename = rename;
    return rtn;
 }
 

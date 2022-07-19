@@ -208,6 +208,7 @@ The copy_file() function generates a target that will copy one or more files to 
 * depends (string[], optional): Specifies the names of targets that must be built before this target is built.
 * source (string or string[], required): Specifies the path to the source file to be copied or, if specified as an array, will specify the paths of the source files to be copied.
 * dest (string, required): Specifies the directory to which the source files will be copied.
+* rename (string, optional): Optionally specifies the name to be assigned to the file in the dest directory.  This parameter will be ignored if there are kore than one files to be copied.  If not specified, the destination file will be given the same name as the source file.
 * options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
 
 The return value from this function will be the object that was created to track the target.
