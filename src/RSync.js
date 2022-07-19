@@ -77,7 +77,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                               if(source_type === dest_type && source_type === file_types.file) 
                               {
                                  if(source_stat.mtime.toString() !== matching_dest.mtime.toString())
-                                    ops.push({ op: "copy", source: source_path, dest: dest_path, ctime: source_stat.ctime, mtime: source_stat.mtime });
+                                    ops.push({ op: "copy", source: source_path, dest: dest_path, atime: source_stat.atime, mtime: source_stat.mtime });
                               }
                               if(source_type === dest_type && source_type === 0)
                                  ops.push({ target, op: "sync", source: source_path, dest: dest_path });
@@ -88,7 +88,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                                  if(source_type === 0)
                                     ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                                  if(source_type === 1)
-                                    ops.push({ op: "copy", source: source_path, dest: dest_path });
+                                    ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.atime, mtime: source_stat.mtime });
                               }
                            }
                            else
@@ -96,7 +96,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                               if(source_stat.isDirectory())
                                  ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                               else if(source_stat.isFile())
-                                 ops.push({ op: "copy", source: source_path, dest: dest_path, mtime: source_stat.mtimeMs, ctime: source_stat.ctimeMs });
+                                 ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.atime, mtime: source_stat.mtime });
                            }
                         });
 
