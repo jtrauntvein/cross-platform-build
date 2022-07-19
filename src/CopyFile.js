@@ -13,9 +13,10 @@ async function do_copy() {
    {
       const file = files_to_copy[i];
       const file_name = path.basename(file);
+      const dest_name = path.join(this.dest, file_name);
       const file_stat = await fs.stat(file);
-      await fs.copyFile(file, this.dest);
-      await fs.utimes(path.join(this.dest, file_name), file_stat.atimeMs, file.mtimeMs);
+      await fs.copyFile(file, dest_name);
+      await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file.mtime);
    }
 }
 
