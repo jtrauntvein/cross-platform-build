@@ -9,6 +9,7 @@ const DockerContainer = require("./DockerContainer");
 const CopyFile = require("./CopyFile");
 const MkDir = require("./MkDir");
 const RSync = require("./RSync");
+const PdfLatex = require("./PdfLatex");
 
 
 module.exports = {
@@ -25,6 +26,7 @@ module.exports = {
    rsync: RSync.rsync,
    copy_file: CopyFile.copy_file,
    mk_dir: MkDir.mk_dir,
-   make_dir: MkDir.mk_dir
+   make_dir: MkDir.mk_dir,
+   pdf_latex: PdfLatex.pdf_latex
 };
 
