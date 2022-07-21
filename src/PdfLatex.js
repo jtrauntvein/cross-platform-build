@@ -15,7 +15,7 @@ async function do_pdf_latex(document, defines, quiet, once, options) {
       return new Promise((accept, reject) => {
          const rtn = {
             error_count: 0,
-            run_count: 0
+            rerun_count: 0
          };
          const runner = child_process.spawn(command, argv, { stdio: "pipe" });
          runner.on("close", () => {
