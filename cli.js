@@ -23,6 +23,17 @@ async function execute() {
    logger = Pino.pino({ name: "cross-platform-build", level: parser.opts().logLevel});
    await Promise.resolve(makefile_module({ }, logger));
 
+   // there may be unresolvable dependencies for the target, we will attempt to locate those dependent targets and, 
+   // if not found, will write out messages for each missing dependencies.
+   const targets_missing_depends = Target.find_missing_depends();
+   if(targets_missing_depends.length > 0)
+   {
+      targets_missing_depends.forEach((invalid_target) => {
+         logger.error(`target ${invalid_target.name} unresolved dependencies: ${invalid_target.missing}`);
+      });
+      process.exit(1);
+   }
+
    // if no targets are specified, we will drop into interactive mode to select the targets
    if(targets.length === 0)
    {

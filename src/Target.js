@@ -103,9 +103,40 @@ async function evaluate(target_names = [], logger) {
    });
 }
 
+/**
+ * @typedef MissingDependsType
+ * @property {object} target Specifies the object used to track the trrget status
+ * @property {string[]} missing Specifies the list of dependent names that cannot be resolved.
+ */
+/**
+ * Searches all targets that have been stored and looks up each of the depend names in order to
+ * find missing dependencies
+ * @returns {MissingDependsType[]} Returns an array of objects that specify the target object and the names
+ * of any missing dependencies.  If all dependencies are resolved, this value will be an empty array.
+ */
+function find_missing_depends()
+{
+   const target_keys = Object.keys(all_targets);
+   const missing_depends = target_keys.filter((target_name) => {
+      const target = all_targets[target_name];
+      return !target.depends.every((depend_name) => all_targets[depend_name] === undefined);
+   });
+   const rtn = missing_depends.map((target_name) => {
+      const target = all_targets[target_name];
+      return {
+         target,
+         missing: target.depends.filter((depend_name) => {
+            const depend_target = all_targets[depend_name];
+            return (depend_target === undefined);
+         })
+      };
+   });
+   return rtn;
+}
 
 module.exports = {
    target,
    evaluate,
-   all_targets
+   all_targets,
+   find_missing_depends
 };
