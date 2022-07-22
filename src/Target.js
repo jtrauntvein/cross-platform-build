@@ -117,20 +117,20 @@ async function evaluate(target_names = [], logger) {
 function find_missing_depends()
 {
    const target_keys = Object.keys(all_targets);
-   const missing_depends = target_keys.filter((target_name) => {
+   const rtn = [];
+   target_keys.forEach((target_name) => {
       const target = all_targets[target_name];
-      return !target.depends.every((depend_name) => all_targets[depend_name] === undefined);
-   });
-   const rtn = missing_depends.map((target_name) => {
-      const target = all_targets[target_name];
-      return {
-         target,
-         missing: target.depends.filter((depend_name) => {
-            const depend_target = all_targets[depend_name];
-            return (depend_target === undefined);
-         })
-      };
-   });
+      const missing = target.depends.filter((depend_name) => {
+         return (all_targets[depend_name] === undefined);
+      });
+      if(missing.length > 0)
+      {
+         rtn.push({
+            target: target,
+            missing
+         });
+      }
+   })
    return rtn;
 }
 
