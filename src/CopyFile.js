@@ -15,8 +15,18 @@ async function do_copy() {
       const file_name = (this.rename && files_to_copy.length === 1 ? this.rename : path.basename(file));
       const dest_name = path.join(this.dest, file_name);
       const file_stat = await fs.stat(file);
-      await fs.copyFile(file, dest_name);
-      await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file_stat.mtime);
+      let dest_stat;
+      try {
+         dest_stat = await fs.stat(path.join(this.dest, file_name));
+      }
+      catch(dest_stat_error) {
+      }
+
+      if(!dest_stat || dest_stat.mtime !== file_stat.mtime)
+      {
+         await fs.copyFile(file, dest_name);
+         await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file_stat.mtime);
+      }
    }
 }
 
