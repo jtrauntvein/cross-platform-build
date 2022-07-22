@@ -20,6 +20,7 @@ async function do_copy() {
          dest_stat = await fs.stat(path.join(this.dest, file_name));
       }
       catch(dest_stat_error) {
+         // ignore exception
       }
 
       if(!dest_stat || dest_stat.mtime !== file_stat.mtime)
