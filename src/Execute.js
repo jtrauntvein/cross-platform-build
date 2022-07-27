@@ -24,7 +24,7 @@ async function do_check_inputs(check, cwd) {
                // the file will be considered dirt if the last changed stamp on the output is 
                // less than any of the last changed stamps on any of the inputs
                const dirty_input = source_stats.find((source_stat) => {
-                  return source_stat === undefined || source_stat.ctime > output_stat.ctime;
+                  return source_stat === undefined || source_stat.mtime > output_stat.mtime;
                });
                return (dirty_input === undefined);
             }
