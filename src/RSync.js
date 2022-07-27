@@ -1,6 +1,8 @@
 const Target = require("./Target");
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const process = require("node:process");
+
 let sync_dir;
 const file_types = {
    directory: 0,
@@ -9,13 +11,16 @@ const file_types = {
 };
 const file_ops = {
    copy: async function(op_desc) {
+      process.stdout.write(`copying ${op_desc.source} to ${op_desc.dest} with time ${op_desc.mtime}`)
       await fs.copyFile(op_desc.source, op_desc.dest);
-      await fs.utimes(op_desc.dest, new Date(op_desc.atime), new Date(op_desc.mtime));
+      await fs.utimes(op_desc.dest, new Date(op_desc.mtime), new Date(op_desc.mtime));
    },
    rm: async function(op_desc) {
+      process.stdout.write(`removing ${op_desc.path}`);
       await fs.rm(op_desc.path, { force: true, recursive: true });
    },
    sync: async function(op_desc) {
+      process.stdout.write(`synching ${op_desc.source} to ${op_desc.dest}`);
       await sync_dir(op_desc.target, op_desc.source, op_desc.dest, op_desc.target.filter, op_desc.target.delete_orphaned);
    }
 };
@@ -88,7 +93,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                                  if(source_type === 0)
                                     ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                                  if(source_type === 1)
-                                    ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.atime, mtime: source_stat.mtime });
+                                    ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.mtime, mtime: source_stat.mtime });
                               }
                            }
                            else
@@ -96,7 +101,7 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
                               if(source_stat.isDirectory())
                                  ops.push({ target, op: "sync", source: source_path, dest: dest_path });
                               else if(source_stat.isFile())
-                                 ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.atime, mtime: source_stat.mtime });
+                                 ops.push({ target, op: "copy", source: source_path, dest: dest_path, atime: source_stat.mtime, mtime: source_stat.mtime });
                            }
                         });
 
@@ -167,7 +172,6 @@ async function rsync({
    source,
    dest,
    delete_orphaned = true,
-   exclude = null,
    filter = undefined,
    options
 }) {
@@ -180,7 +184,6 @@ async function rsync({
    rtn.source = source;
    rtn.dest = dest;
    rtn.delete_orphaned = delete_orphaned;
-   rtn.exclude = exclude;
    rtn.filter = filter;
    rtn.reported_error = null;
    return rtn;
