@@ -11,16 +11,16 @@ const file_types = {
 };
 const file_ops = {
    copy: async function(op_desc) {
-      process.stdout.write(`copying ${op_desc.source} to ${op_desc.dest} with time ${op_desc.mtime}`)
+      process.stdout.write(`copying ${op_desc.source} to ${op_desc.dest} with time ${op_desc.mtime}\n`)
       await fs.copyFile(op_desc.source, op_desc.dest);
       await fs.utimes(op_desc.dest, new Date(op_desc.mtime), new Date(op_desc.mtime));
    },
    rm: async function(op_desc) {
-      process.stdout.write(`removing ${op_desc.path}`);
+      process.stdout.write(`removing ${op_desc.path}\n`);
       await fs.rm(op_desc.path, { force: true, recursive: true });
    },
    sync: async function(op_desc) {
-      process.stdout.write(`synching ${op_desc.source} to ${op_desc.dest}`);
+      process.stdout.write(`synching ${op_desc.source} to ${op_desc.dest}\n`);
       await sync_dir(op_desc.target, op_desc.source, op_desc.dest, op_desc.target.filter, op_desc.target.delete_orphaned);
    }
 };
