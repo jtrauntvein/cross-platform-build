@@ -5,9 +5,10 @@ const fs = require("node:fs");
 
 async function do_pdf_latex(document, defines, quiet, once, options, check_output) {
    const command = "pdflatex";
-   const argv = defines.map((define) => {
+   const defines_args = defines.map((define) => {
       return `\\def\\${define.name}{${define.body}}`;
    });
+   const argv = [ "\\nonstopmode", ...defines_args ];
    const logger = options.logger;
    let run_count = 0;
    let complete = false;
