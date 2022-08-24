@@ -44,8 +44,8 @@ async function do_pdf_latex(document, defines, quiet, once, options, check_outpu
    if(typeof check_output === "object")
    {
       // we are looking for the case where any of the inputs have a last modified date that is newer than any of the outputs.
-      const outputs = output_checks.outputs.map((output_name) => fs.statSync(output_name, { throwIfNoEntry: false })).filter((stat) => stat !== undefined);
-      const inputs = output_checks.inputs.map((input_name) => fs.statSync(input_name, { throwIfNoEntry: false })).filter((stat) => stat !== undefined);
+      const outputs = check_output.outputs.map((output_name) => fs.statSync(output_name, { throwIfNoEntry: false })).filter((stat) => stat !== undefined);
+      const inputs = check_output.inputs.map((input_name) => fs.statSync(input_name, { throwIfNoEntry: false })).filter((stat) => stat !== undefined);
       if(outputs.length > 0 && inputs.length > 0)
       {
          const newer_input = inputs.find((input_stat) => {

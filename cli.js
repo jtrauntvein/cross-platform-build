@@ -21,7 +21,7 @@ async function execute() {
    // we can now load the makefile module to create the project and sub-project (if any) targets.
    const makefile_module = require(path.join(process.cwd(), project_file));
    logger = new Logger({ name: "cross-platform-build", level: parser.opts().logLevel});
-   await Promise.resolve(makefile_module({ }, logger));
+   await Promise.resolve(makefile_module({ logger }, logger));
 
    // there may be unresolvable dependencies for the target, we will attempt to locate those dependent targets and, 
    // if not found, will write out messages for each missing dependencies.
