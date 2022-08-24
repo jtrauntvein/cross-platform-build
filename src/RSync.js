@@ -162,8 +162,9 @@ async function do_rsync() {
  * @param {string} options.dest Specifies the path to which the source files will nbe copied.
  * @param {boolean = true} options.delete_orphaned Set to true if files that are in the dest path that are not present
  * in the source path should be copied.
- * @param {string? | string[]? | RegExp? | function<string>?} options.filter Specifies file name(s), regular expressions, or
- * a callback function that can be used to determine whether a given file or directory should be skipped.
+ * @param {function<string>?} options.filter Optionally specifies a call-back function that will be called with the path
+ * to one of the source objects (file or directory).  This callback must return true if the object should be included or
+ * false if the object is to be ignored.  If this parameter is not defined, all objects in the source path will be considered.
  * @param {object} options.options Specifies the sub-project options that can be created when the target is created from a parent project.
  */
 async function rsync({

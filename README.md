@@ -223,7 +223,7 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 * source (string, required): Specifies the path of the source directory to be mirrored to the destination directory.
 * dest (string, required): Specifies the path of the destination directory that will be modified to mirror the source directory.
 * delete_orphaned (boolean, optional): Set to true (the default) if any contents of the destination directory exist that are not in the source directory should be deleted from the destination directory.
-* filter (string or string[] or regex or function, optional): Specifies a callback function or pattern(s) that will be used by the rsyncjs module to determine what files and/or directories should be considered.
+* filter (function(string): boolean, optional): Optionally specifies a function that will be called with the path of every file or directory in the source path.  If defined, this function must return true if the file or subdirectory is to be included or false if the file or subdirectory should be excluded.  If the function is not defined, all files and subdirectories will be included in the synch operation.
 * options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
 
 The return value from this function will be the object used to track the target.
