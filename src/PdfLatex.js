@@ -65,7 +65,7 @@ async function do_pdf_latex(document, defines, quiet, once, options, check_outpu
       iterate_results = await iterate();   
       complete = (iterate_results.error_count > 0 ||  once || iterate_results.rerun_count === 0);
    }
-   return (iterate_results.error_count === 0);
+   return (output_checks || iterate_results.error_count === 0);
 }
 
 
