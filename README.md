@@ -228,6 +228,20 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 
 The return value from this function will be the object used to track the target.
 
+#### 3.1.11 pdf_latex()
+
+The pdf_latex() function will generate a target that will invoke pdflatex command (provided by TexLive or MikTex depending upon the host OS) repeatedly, if needed,
+to generate a PDF output document and to resolve any reference or layout issues that requires the TeX command to be run again.  The parameters for this function are as follows:
+
+* name (string, required): Specifies the name of the target
+* depends (string[], optional): Specifies the names of targets that must be built before this target will be built.
+* document (string, required): Specifies the name of the LaTex source document.  In the case that the project consists of multiple source documents that are all included in the same source, the name of the single source must be the one specified.
+* defines (object[], optional):  Optionally specifies a collection of macros that should be defined for the LaTeX compiler.  Each object in this array must contain a "name" string property that defines the name of the macro and must also contain a "body" string property that defines the body of that macro.  If this parameter is specified, any macros will be generated in the command line for pdflatex.
+* check_output (object, optional): Optiionally specifies an object that has an "inputs" property of type string[] and an "outputs" property of type string.  If this parameter is specified, the target function will first check to see if any of the specified inputs have a newer modified time than any of the specified outputs and will prevent the execution if these time stamps indicate that the target is up to date.
+* options (object, optional): Should specify the options structure that is passed as a parameter into the makefile.js module function.
+
+The return value for this function will be the object that was created to track the target.
+
 
 ### 3.2 - Helper Functions
 
