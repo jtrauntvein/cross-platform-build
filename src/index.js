@@ -10,10 +10,12 @@ const CopyFile = require("./CopyFile");
 const MkDir = require("./MkDir");
 const RSync = require("./RSync");
 const PdfLatex = require("./PdfLatex");
+const Logger = require("./Logger");
 
 
 module.exports = {
    Target,
+   Logger,
    target: Target.target,
    execute: Execute.execute,
    make_cdecl: MakeCDecl.make_cdecl,

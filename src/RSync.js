@@ -1,7 +1,6 @@
 const Target = require("./Target");
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const process = require("node:process");
 
 let sync_dir;
 const file_types = {
@@ -10,22 +9,22 @@ const file_types = {
    other: 2
 };
 const file_ops = {
-   copy: async function(op_desc) {
-      process.stdout.write(`copying ${op_desc.source} to ${op_desc.dest} with time ${op_desc.mtime}\n`)
+   copy: async function(op_desc, logger) {
+      logger.info(`copying ${op_desc.source} to ${op_desc.dest} with time ${op_desc.mtime}\n`)
       await fs.copyFile(op_desc.source, op_desc.dest);
       await fs.utimes(op_desc.dest, new Date(op_desc.mtime), new Date(op_desc.mtime));
    },
-   rm: async function(op_desc) {
-      process.stdout.write(`removing ${op_desc.path}\n`);
+   rm: async function(op_desc, logger) {
+      logger.info(`removing ${op_desc.path}\n`);
       await fs.rm(op_desc.path, { force: true, recursive: true });
    },
-   sync: async function(op_desc) {
-      process.stdout.write(`synching ${op_desc.source} to ${op_desc.dest}\n`);
+   sync: async function(op_desc, logger) {
+      logger.info(`synching ${op_desc.source} to ${op_desc.dest}\n`);
       await sync_dir(op_desc.target, op_desc.source, op_desc.dest, op_desc.target.filter, op_desc.target.delete_orphaned);
    }
 };
 
-sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
+sync_dir = async function(target, source, dest, filter, delete_orphaned) {
    return new Promise((accept, reject) => {
       try {
          // we need to ensure that the destination directory exists.
@@ -139,14 +138,14 @@ sync_dir = function sync_dir(target, source, dest, filter, delete_orphaned) {
 }
 
 
-async function do_rsync() {
+async function do_rsync(logger) {
    this.pending_ops = [];
    await sync_dir(this, this.source, this.dest, this.filter, this.delete_orphaned);
    while(this.pending_ops.length > 0)
    {
       const op = this.pending_ops[0];
       this.pending_ops.splice(0, 1);
-      await file_ops[op.op](op);
+      await file_ops[op.op](op, logger);
    }
    return true;
 }
@@ -180,7 +179,9 @@ async function rsync({
       name,
       depends,
       options,
-      action: do_rsync
+      action: async function() {
+         return do_rsync(options.logger);
+      }
    });
    rtn.source = source;
    rtn.dest = dest;

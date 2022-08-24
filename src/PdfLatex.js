@@ -94,7 +94,7 @@ async function do_pdf_latex(document, defines, quiet, once, options, check_outpu
  * @param {PdfCheckOutputType[]?} check_output Optionally specifies an array of objects that has an "inputs" property that lists the names of all files that can influence
  * the output as well as an "outputs" property that lists the names of all expected outputs.  If this parameter is specified, the compiler will not be specified if all
  * of the expected outputs have last modified times newer than the last modified times of any of the inputs.
- * @returns 
+ * @returns {object} Returns the object created to track this target and its parameters.
  */
 async function pdf_latex({
    name,

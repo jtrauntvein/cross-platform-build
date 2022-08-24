@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { program: parser } = require("Commander");
-const Pino = require("pino");
+const Logger = require("./src/Logger");
 const prompts = require("prompts");
 const Target = require("./src/Target");
 let logger;
@@ -20,7 +20,7 @@ async function execute() {
 
    // we can now load the makefile module to create the project and sub-project (if any) targets.
    const makefile_module = require(path.join(process.cwd(), project_file));
-   logger = Pino.pino({ name: "cross-platform-build", level: parser.opts().logLevel});
+   logger = new Logger({ name: "cross-platform-build", level: parser.opts().logLevel});
    await Promise.resolve(makefile_module({ }, logger));
 
    // there may be unresolvable dependencies for the target, we will attempt to locate those dependent targets and, 

@@ -57,7 +57,7 @@ function pick_target_and_dependencies(target_name, picked) {
  * @description Called to evaluate the specified targets. 
  * @param {string[]=[]} target_names Specifies the targets to evaluate. If not specified or specified as an empty array (the default),
  * all declared targets will be evaluated.
- * @param {Pino} logger Specifies the logging module. 
+ * @param {Logger} logger Specifies the logging module. 
  */
 async function evaluate(target_names = [], logger) {
    return new Promise((accept, reject) => {

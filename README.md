@@ -281,9 +281,18 @@ module.exports = async function(options) {
 #### 3.2.2 - subdir()
 
 This asynchronous function temporarily changes the process current working directory to a specified sub-directory and processes the expected makefile in that subdirectory.  Any targets defined in that makefile will be added to the list of targets for the entire project so their names must reflect this by being unique.  Likely, the best approach is to prefix the target names within the sub-project with the directory name.
-
+  
 This function expects the following structured parameters:
 
 * name (string - required): Specifies the name of the subdirectory to include.  This subdirectory must be a direct child to the process current working directory.
 
 * options (object - optional): Specifies the options that should be provided to any targets created in the sub-project.  If this function is itself invoked in a sub-project, it is imperative that the options passed to that sub-project's makefile are passed to any targets created.  In addition to the book-keeping properties in the options structure, the application can supply a "makefile_name" string property that will control the name of the makefile that the function will look for in the target directory.
+
+#### 3.2.3 - Logger()
+
+This function is the constructor for a Logger object that is used to help manage logs outputs from the build engine.  Objects built using this constructor
+can be specified as the "logger" property of the options parameter for all targets.  This function accepts the following structured parameters:
+
+* output (function(string), optional): Specifies how the log messages will be written.  If not specified, all messages will be written to the process.stdout handle.
+* log_level (string | number, optional): Specifies the maximum level of message that will be written to the log.  This can be one of the properties of the Logger.all_log_levels static property or it can be a string that names one of those properties.
+
