@@ -138,19 +138,6 @@ sync_dir = async function(target, source, dest, filter, delete_orphaned) {
 }
 
 
-async function do_rsync(logger) {
-   this.pending_ops = [];
-   await sync_dir(this, this.source, this.dest, this.filter, this.delete_orphaned);
-   while(this.pending_ops.length > 0)
-   {
-      const op = this.pending_ops[0];
-      this.pending_ops.splice(0, 1);
-      await file_ops[op.op](op, logger);
-   }
-   return true;
-}
-
-
 /**
  * @description Creates a target that will ensure that all of the files in the
  * source path parameter are copied to the dest path parameter,
@@ -180,7 +167,14 @@ async function rsync({
       depends,
       options,
       action: async function() {
-         return do_rsync(options.logger);
+         await sync_dir(this, this.source, this.dest, this.filter, this.delete_orphaned);
+         while(this.pending_ops.length > 0)
+         {
+            const op = this.pending_ops[0];
+            this.pending_ops.splice(0, 1);
+            await file_ops[op.op](op, this.options.logger);
+         }
+         return true;
       }
    });
    rtn.source = source;
@@ -188,6 +182,7 @@ async function rsync({
    rtn.delete_orphaned = delete_orphaned;
    rtn.filter = filter;
    rtn.reported_error = null;
+   rtn.pending_ops = [];
    return rtn;
 }
 
