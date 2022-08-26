@@ -242,6 +242,35 @@ to generate a PDF output document and to resolve any reference or layout issues 
 
 The return value for this function will be the object that was created to track the target.
 
+#### 3.1.12 - svg_to_ico()
+
+The svg_to_ico() function creates a target that will convert if needed an SVG file into an ICON format file.  This conversion will only take place if the dest file does not exist or is older than the source file.  The parameters for this function are as follows:
+
+* name (string, required): Specifies the name for this target.
+* depends (string[], optional): Specifies the names of the targets that must be built before this target is built.
+* source (string, required): Specifies the path to the source SVG format file.
+* dest (string, required): Specifies the path to the destination PNG file.
+* sizes (number[], optional): Specifies the sizes for the bitmap files to be included within the icon format.  If not specified, the function will default to [ 16, 32, 48, 64, 128, 256 ]
+* options (object, required): Must specify the value of the options argument to the makefile.js function.
+
+The return value will be the object created to track the target.
+
+
+#### 3.1.13 - svg_to_png()
+
+The svg_to_png() function creates a target that will convert if needed an SVG file to a PNG file with the given number of pixels.  It uses the sharp node module to do this work.  The parameters to this function are as follows:
+
+* name (string, required): Specifies the name of the target to be created.
+* depends (string[], optional): Specifies the names of the targets that should be built before this target.
+* source (string, required): Specifies the path to the SVG source file.
+* dest (string, required): Specifies the path of the output .ico file.
+* width (number, required): Specifies the maximum width of the output file in pixels.
+* height (number, required): Specifies the maximum height of the output file in pixels.
+* resize_options (object, optional): Specifies other options that should be passed to the sharp resize() function.
+* options (object, required): Should specify the options parameter passed to the makefile.js function that called this function.
+
+The return value will be the object that was allocated to track the target.
+
 
 ### 3.2 - Helper Functions
 
