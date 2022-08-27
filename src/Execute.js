@@ -47,11 +47,12 @@ async function do_execute(options) {
       do_check_inputs(this.check_inputs, this.cwd).then((dirty) => {
          if(dirty)
          {
+            const child_env = { ...process.env, ...this.env };
             const process = child_process.spawn(this.program_name, this.argv, { 
                stdio: "inherit",
                cwd: this.cwd,
                shell: this.shell,
-               env: { ...process.env, ...this.env },
+               env: child_env,
                options
             });
             process.on("close", (exit_code) => {
@@ -86,7 +87,7 @@ async function do_execute(options) {
  * @param {string[] = []} options.argv Specifies the program arguments
  * @param {string=process.cwd()} options.cwd Specifies the directory from which the process will be executed.  If not specified,
  * will default to the current working directory for the jon-make process.
- * @param {object = []} options.env Specifies the environment variables for the child process.
+ * @param {object = {}} options.env Specifies the environment variables for the child process.
  * @param {boolean | string = false} options.shell Set to true if the process is to be run within a shell.  Set to a string to
  * specify the shell.
  * @param {CheckInputsType?} options.check_inputs Specifies the collection of input and output files that are checked before running the
