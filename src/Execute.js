@@ -40,39 +40,6 @@ async function do_check_inputs(check, cwd) {
 
 
 /**
- * Implements the code that executes the child process.
- */
-async function do_execute(options) {
-   return new Promise((accept, reject) => {
-      do_check_inputs(this.check_inputs, this.cwd).then((dirty) => {
-         if(dirty)
-         {
-            const child_env = { ...process.env, ...this.env };
-            const process = child_process.spawn(this.program_name, this.argv, { 
-               stdio: "inherit",
-               cwd: this.cwd,
-               shell: this.shell,
-               env: child_env,
-               options
-            });
-            process.on("close", (exit_code) => {
-               if(this.ignore_exit_code || exit_code === 0)
-                  accept();
-               else
-                  reject(Error(`${this.program_name} exited with ${exit_code}`));
-            });
-            process.on("error", (error) => {
-               reject(`failed to launch program: ${error}`);
-            });
-         }
-         else
-            accept();
-      });
-   });
-}
-
-
-/**
  * @typedef CheckInputsType
  * @property {string[]} sources Specifies the collection of input files.
  * @property {string[]} outputs Specifies the collection of outputs.
@@ -110,16 +77,36 @@ async function execute({
    const rtn = await Target.target({
       name,
       depends,
-      action: do_execute,
+      action: async function() {
+         const child_env = { ...process.env, ...env };
+         return new Promise((accept, reject) => {
+            do_check_inputs(check_inputs, cwd).then((dirty) => {
+               if(dirty)
+               {
+                  const process = child_process.spawn(program_name, argv, { 
+                     stdio: "inherit",
+                     cwd: cwd,
+                     shell: shell,
+                     env: child_env,
+                     options
+                  });
+                  process.on("close", (exit_code) => {
+                     if(ignore_exit_code || exit_code === 0)
+                        accept();
+                     else
+                        reject(Error(`${program_name} exited with ${exit_code}`));
+                  });
+                  process.on("error", (error) => {
+                     reject(`failed to launch program: ${error}`);
+                  });
+               }
+               else
+                  accept();
+            });
+         });
+      },
       options
    });
-   rtn.program_name = program_name;
-   rtn.argv = argv;
-   rtn.ignore_exit_code = ignore_exit_code;
-   rtn.cwd = cwd;
-   rtn.env = env;
-   rtn.shell = shell;
-   rtn.check_inputs = check_inputs;
    return rtn;
 }
 
