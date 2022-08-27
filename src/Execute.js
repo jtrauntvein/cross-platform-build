@@ -1,6 +1,7 @@
 const child_process = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
+const process = require("node:process");
 const Target = require("./Target");
 
 async function do_check_inputs(check, cwd) {
@@ -50,6 +51,7 @@ async function do_execute(options) {
                stdio: "inherit",
                cwd: this.cwd,
                shell: this.shell,
+               env: { ...process.env, ...this.env },
                options
             });
             process.on("close", (exit_code) => {
@@ -84,7 +86,7 @@ async function do_execute(options) {
  * @param {string[] = []} options.argv Specifies the program arguments
  * @param {string=process.cwd()} options.cwd Specifies the directory from which the process will be executed.  If not specified,
  * will default to the current working directory for the jon-make process.
- * @param {string[] = []} options.env Specifies the environment variables for the child process.
+ * @param {object = []} options.env Specifies the environment variables for the child process.
  * @param {boolean | string = false} options.shell Set to true if the process is to be run within a shell.  Set to a string to
  * specify the shell.
  * @param {CheckInputsType?} options.check_inputs Specifies the collection of input and output files that are checked before running the
@@ -99,7 +101,7 @@ async function execute({
    program_name,
    argv,
    cwd = process.cwd(),
-   env = process.env,
+   env = { },
    shell = false,
    check_inputs = undefined,
    options = {}

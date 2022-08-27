@@ -97,7 +97,7 @@ The execute() function returns a target that will invoke a child process.  The p
 * program_name (string, required): Specifies the name of the program that should be run to build this target.
 * argv (string[], required): Specifies the options that will be passed on the command line to the child process.
 * cwd (string, optional): Specifies the path to a directory from which the child process must be executed.
-* env (string[], optional): Specifies a collection of environment variables that can be defined for the child process.
+* env (object, optional): Specifies a collection of environment variables that can be defined for the child process.
 * shell (boolean, optional): Set to true if the child process should be run within a shell.
 * ignore_exit_code (boolean, optional): Set to true if the exit code for the child process should be ignored.
 * check_inputs (object, optional): Optionally specifies properties "sources" and "outputs" which should both be an array of strings.
