@@ -10,6 +10,7 @@ const CopyFile = require("./CopyFile");
 const MkDir = require("./MkDir");
 const RSync = require("./RSync");
 const PdfLatex = require("./PdfLatex");
+const Rm = require("./rm");
 const Logger = require("./Logger");
 
 
@@ -29,6 +30,7 @@ module.exports = {
    copy_file: CopyFile.copy_file,
    mk_dir: MkDir.mk_dir,
    make_dir: MkDir.mk_dir,
-   pdf_latex: PdfLatex.pdf_latex
+   pdf_latex: PdfLatex.pdf_latex,
+   rm: Rm.rm
 };
 

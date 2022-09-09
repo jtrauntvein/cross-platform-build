@@ -24,7 +24,7 @@ const file_ops = {
    }
 };
 
-sync_dir = async function(target, source, dest, filter, delete_orphaned) {
+sync_dir = async function(target, source, dest, filter, delete_orphaned, filter_orphan) {
    return new Promise((accept, reject) => {
       try {
          // we need to ensure that the destination directory exists.
@@ -109,8 +109,9 @@ sync_dir = async function(target, source, dest, filter, delete_orphaned) {
                         {
                            dest_items.forEach((dest_item) => {
                               const source_item = source_items.find((source_item) => source_item.toUpperCase() === dest_item.name.toUpperCase());
-                              if(!source_item)
-                                 ops.push({ op: "rm", path: path.join(dest, dest_item.name) });
+                              const dest_path = path.join(dest, dest_item.name);
+                              if(!source_item && filter_orphan(dest_path))
+                                 ops.push({ op: "rm", path: dest_path });
                            });
                         }
                         target.pending_ops.push(...ops);
@@ -137,7 +138,6 @@ sync_dir = async function(target, source, dest, filter, delete_orphaned) {
    });
 }
 
-
 /**
  * @description Creates a target that will ensure that all of the files in the
  * source path parameter are copied to the dest path parameter,
@@ -148,6 +148,9 @@ sync_dir = async function(target, source, dest, filter, delete_orphaned) {
  * @param {string} options.dest Specifies the path to which the source files will nbe copied.
  * @param {boolean = true} options.delete_orphaned Set to true if files that are in the dest path that are not present
  * in the source path should be copied.
+ * @param {function<string>?} options.filter_orphan Optionally specifies a function that will be called for any orphaned object 
+ * in the dest directory that might be deleted because of the delete_orphaned object.  This parameter will be ignored if delete_orphaned is 
+ * set to false.  If no parameter is specified, all orphaned objects will be deleted.
  * @param {function<string>?} options.filter Optionally specifies a call-back function that will be called with the path
  * to one of the source objects (file or directory).  This callback must return true if the object should be included or
  * false if the object is to be ignored.  If this parameter is not defined, all objects in the source path will be considered.
@@ -160,6 +163,7 @@ async function rsync({
    dest,
    delete_orphaned = true,
    filter = undefined,
+   filter_orphan = () => true,
    options
 }) {
    const rtn = await Target.target({
@@ -167,7 +171,7 @@ async function rsync({
       depends,
       options,
       action: async function() {
-         await sync_dir(this, this.source, this.dest, this.filter, this.delete_orphaned);
+         await sync_dir(this, source, dest, filter, delete_orphaned, filter_orphan);
          while(this.pending_ops.length > 0)
          {
             const op = this.pending_ops[0];
@@ -180,6 +184,7 @@ async function rsync({
    rtn.source = source;
    rtn.dest = dest;
    rtn.delete_orphaned = delete_orphaned;
+   rtn.filter_orphan = filter_orphan;
    rtn.filter = filter;
    rtn.reported_error = null;
    rtn.pending_ops = [];
