@@ -72,6 +72,7 @@ async function docker_container({
       argv: [
          "run",
          "-t",
+         "--rm",
          "--mount",
          `type=bind,src=${cwd},dst=${mount_point},consistency=cached`,
          image,

@@ -12,6 +12,8 @@ const RSync = require("./RSync");
 const PdfLatex = require("./PdfLatex");
 const Rm = require("./rm");
 const Logger = require("./Logger");
+const SvgToIco = require("./SvgToIco");
+const SvgToPng = require("./SvgToPng");
 
 
 module.exports = {
@@ -31,6 +33,8 @@ module.exports = {
    mk_dir: MkDir.mk_dir,
    make_dir: MkDir.mk_dir,
    pdf_latex: PdfLatex.pdf_latex,
+   svg_to_ico: SvgToIco.svg_to_ico,
+   svg_to_png: SvgToPng.svg_to_png,
    rm: Rm.rm
 };
 

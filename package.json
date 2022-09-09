@@ -1,6 +1,6 @@
 {
   "name": "cross-platform-build",
-  "version": "1.5.0",
+  "version": "1.5.3",
   "description": "Cross platform build tool aimed at replacing nmake and gnu make with a more flexible solution.",
   "main": "src/index.js",
   "scripts": {
@@ -27,6 +27,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "commander": "^9.3.0",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "sharp": "^0.30.7",
+    "svg-to-ico": "^1.0.11"
   }
 }
