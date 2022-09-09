@@ -31,12 +31,11 @@ module.exports = async function(options) {
       width: 128,
       height: 128,
       options
-   });;
+   });
    await tools.rm({
       name: "rm-temp",
-      depends: [ "copy-to-temp" ],
       path: rsync_dest,
-      ignore_error: false,
+      ignore_error: true,
       options
    });
 };

@@ -13,7 +13,7 @@ async function rm({
       depends,
       options,
       action: async function() {
-         const path_info = fs.statSync(path);
+         const path_info = fs.statSync(path, { throwIfNoEntry: false });
          if(path_info)
          {
             try {
