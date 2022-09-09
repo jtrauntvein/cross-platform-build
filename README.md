@@ -224,6 +224,7 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 * dest (string, required): Specifies the path of the destination directory that will be modified to mirror the source directory.
 * delete_orphaned (boolean, optional): Set to true (the default) if any contents of the destination directory exist that are not in the source directory should be deleted from the destination directory.
 * filter (function(string): boolean, optional): Optionally specifies a function that will be called with the path of every file or directory in the source path.  If defined, this function must return true if the file or subdirectory is to be included or false if the file or subdirectory should be excluded.  If the function is not defined, all files and subdirectories will be included in the synch operation.
+* filter_orphan (function(string): boolean, optional): Optionally specifies a function that will be called with the path to any objects in the dest directory that are not in the source directory.  If not specified or the function returns true, these orphaned objects will be removed from the dest directory when the delete_orphans parameter is set to true.
 * options (object, optional): Specifies the object that can be passed when the target is created within a sub-project.
 
 The return value from this function will be the object used to track the target.
@@ -242,6 +243,17 @@ to generate a PDF output document and to resolve any reference or layout issues 
 
 The return value for this function will be the object that was created to track the target.
 
+#### 3.1.12 rm()
+
+The rm() function will generate a target that will delete a specified file or directory from a given path.  The parameters for this function are as follows:
+
+* name (string, required): Specifies the name for the target.
+* depends (string[], optional): Specifies the collection of targets that must be built before this target is built.
+* path (string, required): Specifies the path to the file or directory that should be removed.
+* ignore_error (boolean, optional): Set to true if a failure to delete should be ignored.  If not specified, this value will default to true.
+* options (object, optional): Should specify the options structure passed as a parameter to the makefile.js entry point.
+
+The return value for this function will be the object that is created to track the target.
 
 ### 3.2 - Helper Functions
 
