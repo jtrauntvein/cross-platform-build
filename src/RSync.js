@@ -20,7 +20,7 @@ const file_ops = {
    },
    sync: async function(op_desc, logger) {
       logger.info(`synching ${op_desc.source} to ${op_desc.dest}\n`);
-      await sync_dir(op_desc.target, op_desc.source, op_desc.dest, op_desc.target.filter, op_desc.target.delete_orphaned);
+      await sync_dir(op_desc.target, op_desc.source, op_desc.dest, op_desc.target.filter, op_desc.target.delete_orphaned, op_desc.target.filter_orphan);
    }
 };
 
