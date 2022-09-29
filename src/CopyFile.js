@@ -3,34 +3,6 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 
 
-async function do_copy() {
-   const files_to_copy = [];
-   if(Array.isArray(this.source))
-      files_to_copy.push(...this.source);
-   else
-      files_to_copy.push(this.source);
-   for(let i = 0; i < files_to_copy.length; ++i)
-   {
-      const file = files_to_copy[i];
-      const file_name = (this.rename && files_to_copy.length === 1 ? this.rename : path.basename(file));
-      const dest_name = path.join(this.dest, file_name);
-      const file_stat = await fs.stat(file);
-      let dest_stat;
-      try {
-         dest_stat = await fs.stat(path.join(this.dest, file_name));
-      }
-      catch(dest_stat_error) {
-         // ignore exception
-      }
-
-      if(!dest_stat || dest_stat.mtime !== file_stat.mtime)
-      {
-         await fs.copyFile(file, dest_name);
-         await fs.utimes(path.join(this.dest, file_name), file_stat.atime, file_stat.mtime);
-      }
-   }
-}
-
 
 /**
  * @description Creates a target that can copy one or more files to a destination path
@@ -59,11 +31,36 @@ async function copy_file({
       name,
       depends,
       options,
-      action: do_copy
+      action: async() => {
+         const files_to_copy = [];
+         if(Array.isArray(source))
+            files_to_copy.push(...source);
+         else
+            files_to_copy.push(source);
+         for(let i = 0; i < files_to_copy.length; ++i)
+         {
+            const file = files_to_copy[i];
+            const file_name = (rename && files_to_copy.length === 1 ? rename : path.basename(file));
+            const dest_name = path.join(dest, file_name);
+            const file_stat = await fs.stat(file);
+            let dest_stat;
+            try {
+               dest_stat = await fs.stat(path.join(dest, file_name));
+            }
+            catch(dest_stat_error) {
+               // ignore exception
+            }
+
+            if(!dest_stat || dest_stat.mtime !== file_stat.mtime)
+            {
+               if(options.logger)
+                  options.logger.info(`copying ${file} to ${path.join(dest, file_name)}`);
+               await fs.copyFile(file, dest_name);
+               await fs.utimes(path.join(dest, file_name), file_stat.atime, file_stat.mtime);
+            }
+         }
+      }
    });
-   rtn.source = source;
-   rtn.dest = dest;
-   rtn.rename = rename;
    return rtn;
 }
 
