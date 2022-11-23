@@ -35,7 +35,7 @@ async function wait_for_sync({
             };
             const check_interval = 100;
             fs.stat(reference, (ref_err, reference_stats) => {
-               if(ref_err !== undefined)
+               if(ref_err)
                   reject(ref_err);
                else
                {

@@ -27,7 +27,7 @@ async function rename({
          const source_path = path.dirname(source);
          const dest_name = path.basename(new_name);
          let dest_path = path.dirname(new_name);
-         if(dest_path.length === 0)
+         if(dest_path == ".")
             dest_path = source_path;
          await fs.promises.rename(source, path.join(dest_path, dest_name));
          return true;
