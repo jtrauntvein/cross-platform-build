@@ -14,6 +14,8 @@ const Rm = require("./rm");
 const Logger = require("./Logger");
 const SvgToIco = require("./SvgToIco");
 const SvgToPng = require("./SvgToPng");
+const WaitForSync = require("./WaitForSync");
+const Rename = require("./Rename");
 
 
 module.exports = {
@@ -35,6 +37,8 @@ module.exports = {
    pdf_latex: PdfLatex.pdf_latex,
    svg_to_ico: SvgToIco.svg_to_ico,
    svg_to_png: SvgToPng.svg_to_png,
-   rm: Rm.rm
+   rm: Rm.rm,
+   wait_for_sync: WaitForSync.wait_for_sync,
+   rename: Rename.rename
 };
 
