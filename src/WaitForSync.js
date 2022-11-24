@@ -51,6 +51,7 @@ async function wait_for_sync({
                      {
                         if(delay_after === 0)
                         {
+                           state.matched = true;
                            clearInterval(state.elapsed_timer);
                            accept(true);
                         }
@@ -65,7 +66,7 @@ async function wait_for_sync({
                            accept(true);
                         }
                      }
-                     else if(elapsed > timeout)
+                     else if(!state.matched && elapsed > timeout)
                      {
                         clearInterval(state.elapsed_timer);
                         reject(Error("timed out waiting for the target to update"));
