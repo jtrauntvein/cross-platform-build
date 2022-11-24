@@ -301,6 +301,7 @@ The parameters for this function include the following:
 * target (string - file name, required): Specifies the path of the file that the target will watch.
 * timeout (number, optional): Specifies the amount of time that the target will wait for the target file to be updated before
 it reports that the target build has failed.
+* delay_after (number, optional): Optionally specifies the number of seconds to delay after a match is made.  Defaults to zero.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point. 
 
 The return value for this function will be the object that is created to track the target.

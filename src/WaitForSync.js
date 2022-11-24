@@ -12,6 +12,7 @@ const fs = require("node:fs");
  * @param {string} target Specifies the path of the file that the target will watch.
  * @param {number} timeout Optionally specifies the amount of time in seconds that the target will wait for the target file to be updated before
  * reporting an error.
+ * @param {number=0} delay_after Specifies the number of seconds to delay after a match is made.
  * @param {object} options Specifies the options argument passed to the makefile.js entry-point.
  */
 async function wait_for_sync({
@@ -20,6 +21,7 @@ async function wait_for_sync({
    reference,
    target,
    timeout = 300,
+   delay_after = 0,
    options
 }) {
    const rtn = await Target.target({
@@ -31,7 +33,8 @@ async function wait_for_sync({
             const state = {
                elapsed_base: Date.UTC(),
                elapsed_timer: null,
-               reference_time: null
+               reference_time: null,
+               matched: false
             };
             const check_interval = 100;
             fs.stat(reference, (ref_err, reference_stats) => {
@@ -46,8 +49,21 @@ async function wait_for_sync({
                      const target_stat = fs.statSync(target, { throwIfNoEntry: false });
                      if(target_stat && target_stat.mtime > state.reference_time)
                      {
-                        clearInterval(state.elapsed_timer);
-                        accept(true);
+                        if(delay_after === 0)
+                        {
+                           clearInterval(state.elapsed_timer);
+                           accept(true);
+                        }
+                        else if(!state.matched)
+                        {
+                           state.matched = true;
+                           state.elapsed_base = Date.UTC();
+                        }
+                        else if(elapsed > delay_after)
+                        {
+                           clearInterval(state.elapsed_timer);
+                           accept(true);
+                        }
                      }
                      else if(elapsed > timeout)
                      {
