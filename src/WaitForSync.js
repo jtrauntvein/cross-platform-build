@@ -51,19 +51,25 @@ async function wait_for_sync({
                      {
                         if(delay_after === 0)
                         {
+                           options.logger.info(`target file is newer than the reference`)
                            state.matched = true;
                            clearInterval(state.elapsed_timer);
                            accept(true);
                         }
-                        else if(!state.matched)
+                        else
                         {
-                           state.matched = true;
-                           state.elapsed_base = Date.UTC();
-                        }
-                        else if(elapsed > delay_after)
-                        {
-                           clearInterval(state.elapsed_timer);
-                           accept(true);
+                           if(!state.matched)
+                           {
+                              state.matched = true;
+                              options.logger.info(`target file is newer than the reference: waiting for ${delay_after} seconds`);
+                              state.elapsed_base = Date.UTC();
+                           }
+                           if(elapsed > delay_after)
+                           {
+                              clearInterval(state.elapsed_timer);
+                              options.logger.info(`wait_for_synch delay is complete`);
+                              accept(true);
+                           }
                         }
                      }
                      else if(!state.matched && elapsed > timeout)
