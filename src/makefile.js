@@ -1,5 +1,6 @@
 const MakeCDecl = require("./MakeCDecl");
 const PickDirTargets = require("./PickDirTargets");
+const WaitForSync = require("./WaitForSync");
 
 module.exports = async function(options) {
    const match_js = /\.js$/;
@@ -17,5 +18,13 @@ module.exports = async function(options) {
             });
          }
       }
+   });
+   await WaitForSync.wait_for_sync({
+      name: "src/wait-sync-test",
+      depends: [ "src/WaitForSync.js.h" ],
+      reference: "WaitForSync.js",
+      target: "WaitForSync.js.h",
+      delay_after: 10,
+      options
    });
 };

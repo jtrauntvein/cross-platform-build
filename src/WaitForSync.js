@@ -31,7 +31,7 @@ async function wait_for_sync({
       action: async function() {
          return new Promise((accept, reject) => {
             const state = {
-               elapsed_base: Date.UTC(),
+               elapsed_base: Date.now(),
                elapsed_timer: null,
                reference_time: null,
                matched: false
@@ -44,7 +44,7 @@ async function wait_for_sync({
                {
                   state.reference_time = reference_stats.mtime;
                   state.elapsed_timer = setInterval(() => {
-                     const current_time = Date.UTC();
+                     const current_time = Date.now();
                      const elapsed = (current_time - state.elapsed_base) / 1000;
                      const target_stat = fs.statSync(target, { throwIfNoEntry: false });
                      if(target_stat && target_stat.mtime > state.reference_time)
@@ -62,12 +62,12 @@ async function wait_for_sync({
                            {
                               state.matched = true;
                               options.logger.info(`target file is newer than the reference: waiting for ${delay_after} seconds`);
-                              state.elapsed_base = Date.UTC();
+                              state.elapsed_base = Date.now();
                            }
                            if(elapsed > delay_after)
                            {
                               clearInterval(state.elapsed_timer);
-                              options.logger.info(`wait_for_synch delay is complete`);
+                              options.logger.info(`${name} wait_for_synch delay is complete`);
                               accept(true);
                            }
                         }
