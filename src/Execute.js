@@ -50,11 +50,11 @@ async function do_check_inputs(check, cwd) {
  * @param {string} options.name Specifies the name of this target
  * @param {string[] = []} options.depends Specifies the dependencies of this target.
  * @param {boolean=false} options.ignore_exit_code Set to true if the exit code for the child process shouuld be ignored
- * @param {string} options.program_name Specifies the name of the program to be run
- * @param {string[] = []} options.argv Specifies the program arguments
- * @param {string=process.cwd()} options.cwd Specifies the directory from which the process will be executed.  If not specified,
+ * @param {string | function<string>} options.program_name Specifies the name of the program to be run
+ * @param {string[] = [] | function<string[]>} options.argv Specifies the program arguments
+ * @param {string=process.cwd() | function<string>} options.cwd Specifies the directory from which the process will be executed.  If not specified,
  * will default to the current working directory for the jon-make process.
- * @param {object = {}} options.env Specifies the environment variables for the child process.
+ * @param {object = {} | function<object>} options.env Specifies the environment variables for the child process.
  * @param {boolean | string = false} options.shell Set to true if the process is to be run within a shell.  Set to a string to
  * specify the shell.
  * @param {CheckInputsType?} options.check_inputs Specifies the collection of input and output files that are checked before running the
@@ -78,14 +78,21 @@ async function execute({
       name,
       depends,
       action: async function() {
-         const child_env = { ...process.env, ...env };
+         const effective_env = (typeof env === "function" ? env() : env);
+         const effective_argv = (typeof argv === "function" ? argv() : argv);
+         const effective_program = (typeof program_name === "function" ? program_name() : program_name);
+         const effective_cwd = (typeof cwd === "function" ? cwd() : cwd);
+         const child_env = { 
+            ...process.env, 
+            ...effective_env 
+         };
          return new Promise((accept, reject) => {
-            do_check_inputs(check_inputs, cwd).then((dirty) => {
+            do_check_inputs(check_inputs, effective_cwd).then((dirty) => {
                if(dirty)
                {
-                  const process = child_process.spawn(program_name, argv, { 
+                  const process = child_process.spawn(effective_program, effective_argv, { 
                      stdio: "inherit",
-                     cwd: cwd,
+                     cwd: effective_cwd,
                      shell: shell,
                      env: child_env,
                      options

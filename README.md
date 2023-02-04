@@ -60,7 +60,8 @@ module.exports = async function(options) {
       name: "build-name",
       program_name: "gcc",
       argv: [ "-o", "foo", "foo.c" ],
-      depends: [ "src/libraries" ]
+      depends: [ "src/libraries" ],
+      options
    });
 };
 ```
@@ -96,10 +97,10 @@ The execute() function returns a target that will invoke a child process.  The p
 * name (string, required): Specifies the name of the target.
 * depends (string[], required): Specifies the names of targets on which this target will depend.
 * depends (string[], optional): Specifies the names of targets that must be built successfully before this target can be built.
-* program_name (string, required): Specifies the name of the program that should be run to build this target.
-* argv (string[], required): Specifies the options that will be passed on the command line to the child process.
-* cwd (string, optional): Specifies the path to a directory from which the child process must be executed.
-* env (object, optional): Specifies a collection of environment variables that can be defined for the child process.
+* program_name (string, required): Specifies the name of the program that should be run to build this target.  Can also be a function that is evaluated at the time when the target is being built
+* argv (string[], required): Specifies the options that will be passed on the command line to the child process.  Can also be a function that is evaluated at the time when the target is built.
+* cwd (string, optional): Specifies the path to a directory from which the child process must be executed. Can also be a function that is evaluated at the time when the target is built.
+* env (object, optional): Specifies a collection of environment variables that can be defined for the child process. Can also be a function that is evaluated at the time when the target is built.
 * shell (boolean, optional): Set to true if the child process should be run within a shell.
 * ignore_exit_code (boolean, optional): Set to true if the exit code for the child process should be ignored.
 * check_inputs (object, optional): Optionally specifies properties "sources" and "outputs" which should both be an array of strings.
@@ -119,10 +120,10 @@ The make_cdecl() function generates a target that will operate on any file and w
 
 * name (string, required): Specifies the name of the target.
 * depends (string[], optional): Specifies the names of targets that must be built before this target.
-* input (string, required): Specifies the name of the input file.
-* output (string, required): Specifies the name of the output file.
-* variable_name (string, required): Specifies the name of the variable that will be declared in the output file.
-* namespaces (string, optional):  Specifies the names of C++ namespaces that will be generated in the output and will contain the generated declaration.
+* input (string, required): Specifies the name of the input file. Can also be a function that is evaluated at the time when the target is built.
+* output (string, required): Specifies the name of the output file. Can also be a function that is evaluated at the time when the target is built.
+* variable_name (string, required): Specifies the name of the variable that will be declared in the output file. Can also be a function that is evaluated at the time when the target is built.
+* namespaces (string, optional):  Specifies the names of C++ namespaces that will be generated in the output and will contain the generated declaration. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter of the makefile.js entry-point function.
 
 The return value from this function will be the object that is generated to track the state of the task.
@@ -149,12 +150,12 @@ The http_request() function generates a target that will invoke an HTTP based se
 
 * name (string, required): Specifies the name of the target
 * depends (string[], optional): Specifies the collection of tasks that must be built before this target can be built.
-* endpoint (string, required): Specifies the URL address and path for the web service.
+* endpoint (string, required): Specifies the URL address and path for the web service. Can also be a function that is evaluated at the time when the target is built.
 * method (string, optional): Specifies the HTTP protocol method that should be used.  Can be one of "POST", "GET", or "PUT".
-* query_params (object, optional): Specifies the query parameters that should be encoded in the URL.
-* headers (object, optional): Specifies HTTP header values that will get passed in the request.
+* query_params (object, optional): Specifies the query parameters that should be encoded in the URL. Can also be a function that is evaluated at the time when the target is built.
+* headers (object, optional): Specifies HTTP header values that will get passed in the request. Can also be a function that is evaluated at the time when the target is built.
 * data (function, string || object || ArrayBuffer || ArrayBufferView || FormData || File || Blob || node Stream || node Buffer, optional): Specifies the data that should get passed in the body of the request.  If a function is passed, it will be invoked when the target is built and expected to return one of the other types.
-* other_axios_props (object, optional): Specifies other configuration options for the Axios request.
+* other_axios_props (object, optional): Specifies other configuration options for the Axios request. Can also be a function that is evaluated at the time when the target is built.
 * response_handler (function<object>, optional): Specifies a call-back that will process the response data from the request.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
@@ -196,7 +197,7 @@ The mk_dir() function generates a target that will ensure the existence of a dir
 
 * name (string, required): Specifies the name of the target to be created.
 * depends (string[], optional): Specifies the names of targets that must be built before this target is built.
-* path (string, required): Specifies the path for the directory to be created if needed.  If the directory already exists, the target will still be considered a success.
+* path (string, required): Specifies the path for the directory to be created if needed.  If the directory already exists, the target will still be considered a success. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value from this function will be the object that was created to track the status of the target.
@@ -208,9 +209,9 @@ The copy_file() function generates a target that will copy one or more files to 
 
 * name (string, required): Specifies the name for the generated target.
 * depends (string[], optional): Specifies the names of targets that must be built before this target is built.
-* source (string or string[], required): Specifies the path to the source file to be copied or, if specified as an array, will specify the paths of the source files to be copied.
-* dest (string, required): Specifies the directory to which the source files will be copied.
-* rename (string, optional): Optionally specifies the name to be assigned to the file in the dest directory.  This parameter will be ignored if there are kore than one files to be copied.  If not specified, the destination file will be given the same name as the source file.
+* source (string or string[], required): Specifies the path to the source file to be copied or, if specified as an array, will specify the paths of the source files to be copied. Can also be a function that is evaluated at the time when the target is built.
+* dest (string, required): Specifies the directory to which the source files will be copied. Can also be a function that is evaluated at the time when the target is built.
+* rename (string, optional): Optionally specifies the name to be assigned to the file in the dest directory.  This parameter will be ignored if there are kore than one files to be copied.  If not specified, the destination file will be given the same name as the source file. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value from this function will be the object that was created to track the target.
@@ -222,8 +223,8 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 
 * name (string, required): Specifies the name of the target.
 * depends (string[], optional): Specifies the names of targets that must be built before this target is built.
-* source (string, required): Specifies the path of the source directory to be mirrored to the destination directory.
-* dest (string, required): Specifies the path of the destination directory that will be modified to mirror the source directory.
+* source (string, required): Specifies the path of the source directory to be mirrored to the destination directory. Can also be a function that is evaluated at the time when the target is built.
+* dest (string, required): Specifies the path of the destination directory that will be modified to mirror the source directory. Can also be a function that is evaluated at the time when the target is built.
 * delete_orphaned (boolean, optional): Set to true (the default) if any contents of the destination directory exist that are not in the source directory should be deleted from the destination directory.
 * filter (function(string): boolean, optional): Optionally specifies a function that will be called with the path of every file or directory in the source path.  If defined, this function must return true if the file or subdirectory is to be included or false if the file or subdirectory should be excluded.  If the function is not defined, all files and subdirectories will be included in the synch operation.
 * filter_orphan (function(string): boolean, optional): Optionally specifies a function that will be called with the path to any objects in the dest directory that are not in the source directory.  If not specified or the function returns true, these orphaned objects will be removed from the dest directory when the delete_orphans parameter is set to true.
@@ -251,9 +252,9 @@ The svg_to_ico() function creates a target that will convert if needed an SVG fi
 
 * name (string, required): Specifies the name for this target.
 * depends (string[], optional): Specifies the names of the targets that must be built before this target is built.
-* source (string, required): Specifies the path to the source SVG format file.
-* dest (string, required): Specifies the path to the destination PNG file.
-* sizes (number[], optional): Specifies the sizes for the bitmap files to be included within the icon format.  If not specified, the function will default to [ 16, 32, 48, 64, 128, 256 ]
+* source (string, required): Specifies the path to the source SVG format file. Can also be a function that is evaluated at the time when the target is built.
+* dest (string, required): Specifies the path to the destination PNG file. Can also be a function that is evaluated at the time when the target is built.
+* sizes (number[], optional): Specifies the sizes for the bitmap files to be included within the icon format.  If not specified, the function will default to [ 16, 32, 48, 64, 128, 256 ]. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value will be the object created to track the target.
@@ -265,11 +266,11 @@ The svg_to_png() function creates a target that will convert if needed an SVG fi
 
 * name (string, required): Specifies the name of the target to be created.
 * depends (string[], optional): Specifies the names of the targets that should be built before this target.
-* source (string, required): Specifies the path to the SVG source file.
-* dest (string, required): Specifies the path of the output .ico file.
-* width (number, required): Specifies the maximum width of the output file in pixels.
-* height (number, required): Specifies the maximum height of the output file in pixels.
-* resize_options (object, optional): Specifies other options that should be passed to the sharp resize() function.
+* source (string, required): Specifies the path to the SVG source file. Can also be a function that is evaluated at the time when the target is built.
+* dest (string, required): Specifies the path of the output .ico file. Can also be a function that is evaluated at the time when the target is built.
+* width (number, required): Specifies the maximum width of the output file in pixels. Can also be a function that is evaluated at the time when the target is built.
+* height (number, required): Specifies the maximum height of the output file in pixels. Can also be a function that is evaluated at the time when the target is built.
+* resize_options (object, optional): Specifies other options that should be passed to the sharp resize() function. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value will be the object that was allocated to track the target.
@@ -280,7 +281,7 @@ The rm() function will generate a target that will delete a specified file or di
 
 * name (string, required): Specifies the name for the target.
 * depends (string[], optional): Specifies the collection of targets that must be built before this target is built.
-* path (string, required): Specifies the path to the file or directory that should be removed.
+* path (string, required): Specifies the path to the file or directory that should be removed. Can also be a function that is evaluated at the time when the target is built.
 * ignore_error (boolean, optional): Set to true if a failure to delete should be ignored.  If not specified, this value will default to true.
 * options (object, required): Should specify the options structure passed as a parameter to the makefile.js entry point.
 
@@ -297,11 +298,11 @@ The parameters for this function include the following:
 
 * name (string, required): Specifies the name of the new target to be created
 * depends (string[], optional): Specifies the collection of targets that must be built before this target can be begin.
-* reference (string - file name, required): Specifies the path to the file that will be used for the time reference.  
-* target (string - file name, required): Specifies the path of the file that the target will watch.
+* reference (string - file name, required): Specifies the path to the file that will be used for the time reference.   Can also be a function that is evaluated at the time when the target is built.
+* target (string - file name, required): Specifies the path of the file that the target will watch. Can also be a function that is evaluated at the time when the target is built.
 * timeout (number, optional): Specifies the amount of time that the target will wait for the target file to be updated before
-it reports that the target build has failed.
-* delay_after (number, optional): Optionally specifies the number of seconds to delay after a match is made.  Defaults to zero.
+it reports that the target build has failed. Can also be a function that is evaluated at the time when the target is built.
+* delay_after (number, optional): Optionally specifies the number of seconds to delay after a match is made.  Defaults to zero. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point. 
 
 The return value for this function will be the object that is created to track the target.
@@ -312,9 +313,9 @@ The rename() function will generate a target that will rename a specified file o
 
 * name (string, required): Specifies the name of the target
 * depends (string[], optional): Specifies the collection of names for targets that must be built before this target is built.
-* source (string, required): Specifies the path and name of the file or directory to be renamed.
+* source (string, required): Specifies the path and name of the file or directory to be renamed. Can also be a function that is evaluated at the time when the target is built.
 * dest (string, required): Specifies the new name that should be assigned to the directory or file.  If this parameter specifies its own path, the object 
-at source will be moved to that path.  Otherwise, the source object will be renamed in place.
+at source will be moved to that path.  Otherwise, the source object will be renamed in place. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry point.
 
 The return value will be the object used to track the target.

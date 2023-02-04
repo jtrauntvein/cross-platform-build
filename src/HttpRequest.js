@@ -1,78 +1,22 @@
-const Axios = require("Axios").default;
+const Axios = require("axios").default;
 const Target = require("./Target");
-
-
-/**
- * Implements the code that performs the HTTP request.
- */
-async function do_http_request() {
-   return new Promise((accept, reject) => {
-      const method = this.method.toUpperCase();
-      const axios_config = {
-         headers: this.headers,
-         params: this.query_params,
-         ...this.other_axios_props
-      };
-      if(method === "POST")
-      {
-         let data = this.data;
-         if(typeof this.data === "function")
-            data = this.data.call(this, axios_config);
-         Axios.post(this.endpoint, data, axios_config).then((response) => {
-            let rtn = response;
-            if(typeof this.response_handler === "function")
-               rtn = this.response_handler.call(this, response);
-            accept(rtn);
-         }).catch((error) => {
-            reject(error);
-         });
-      }
-      else if(method === "GET")
-      {
-         Axios.get(this.endpoint, axios_config).then((response) => {
-            let rtn = response;
-            if(typeof this.response_handler === "function")
-               rtn = this.response_handler.call(this, response);
-            accept(rtn);
-         }).catch((error) => {
-            reject(error);
-         });
-      }
-      else if(method === "PUT")
-      {
-         let data = this.data;
-         if(typeof data === "function")
-            data = data.call(this, axios_config);
-         Axios.put(this.endpoint, data, axios_config).then((response) => {
-            let rtn = response;
-            if(typeof this.response_handler === "function")
-               rtn = this.response_handler.call(this, response);
-            accept(rtn);
-         }).catch((error) => {
-            reject(error);
-         });
-      }
-      else
-         reject(Error(`Unsupported HTTP method: ${this.method}`));
-   });
-}
 
 
 /**
  * @typedef HttpRequestParamsType
  * @property {string} name Specifies the name of the target.
  * @property {string[]} depends Specifies the names of targets on which the generated target will depend.
- * @property {string} endpoint Specifies the URL for the web service to invoke.
+ * @property {string | function<string>} endpoint Specifies the URL for the web service to invoke.
  * @property {string="POST"} method Specifies the HTTP method for the request
- * @property {object={}} query_params Optionally specifies the query parameters that will be passed along with the endpoint.
- * @property {object={}} headers Optionally specifies the HTTP header fields that will be passed with the request.
+ * @property {object={} | function<object>} query_params Optionally specifies the query parameters that will be passed along with the endpoint.
+ * @property {object={} | function<object>} headers Optionally specifies the HTTP header fields that will be passed with the request.
  * @property {*?} data Optionally specifies the data that should be passed with the request.  This can be any of the 
  * types supported by the axios module but can also be specified as a function that would be
  * called before the request that would return the actual data to be sent.
- * @property {object=[]} other_axios_props Optionally specifies other properties that should be
+ * @property {object={} | function<object>} other_axios_props Optionally specifies other properties that should be
  * passed to the axios request.
  * @property {function<object>?} response_handler Optionally specifies a function that will handle the response from the request.
- * @property {object={}} options Optionally specifies the options used when this target is generated within a sub-project.
+ * @property {object={}} options Specifies the options used when this target is generated within a sub-project.
  */
 /**
  * Defines a target type that performs an HTTP request for GET, POST, PUT, and other 
@@ -90,21 +34,66 @@ async function http_request({
    data = undefined,
    other_axios_props = {},
    response_handler = undefined,
-   options = {}
+   options
 }) {
    const rtn = await Target.target({
       name,
       depends,
-      action: do_http_request,
+      action: async function() {
+         return new Promise((accept, reject) => {
+            const request_method = method.toUpperCase();
+            const request_headers = (typeof headers === "function" ? headers() : headers);
+            const request_params = (typeof query_params === "function" ? query_params() : query_params);
+            const request_axios_props = (typeof axios_props === "function" ? other_axios_props() : other_axios_props)
+            const request_endpoint = (typeof endpoint === "function" ? endpoint() : endpoint);
+            const axios_config = {
+               headers: request_headers,
+               params: request_params,
+               ...request_axios_props
+            };
+            if(request_method === "POST")
+            {
+               let data = this.data;
+               if(typeof this.data === "function")
+                  data = this.data.call(this, axios_config);
+               Axios.post(request_endpoint, data, axios_config).then((response) => {
+                  let rtn = response;
+                  if(typeof response_handler === "function")
+                     rtn = response_handler.call(this, response);
+                  accept(rtn);
+               }).catch((error) => {
+                  reject(error);
+               });
+            }
+            else if(request_method === "GET")
+            {
+               Axios.get(this.endpoint, axios_config).then((response) => {
+                  let rtn = response;
+                  if(typeof response_handler === "function")
+                     rtn = response_handler.call(this, response);
+                  accept(rtn);
+               }).catch((error) => {
+                  reject(error);
+               });
+            }
+            else if(request_method === "PUT")
+            {
+               const request_data = (typeof data === "function" ? data() : data);
+               Axios.put(this.endpoint, request_data, axios_config).then((response) => {
+                  let rtn = response;
+                  if(typeof response_handler === "function")
+                     rtn = response_handler.call(this, response);
+                  accept(rtn);
+               }).catch((error) => {
+                  reject(error);
+               });
+            }
+            else
+               reject(Error(`Unsupported HTTP method: ${this.method}`));
+         });
+      },
       options
    });
-   rtn.method = method;
-   rtn.endpoint = endpoint;
-   rtn.query_params = query_params;
-   rtn.headers = headers;
-   rtn.data = data;
-   rtn.other_axios_props = other_axios_props;
-   rtn.response_handler = response_handler;
    return rtn;
 }
 
