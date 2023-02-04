@@ -51,12 +51,12 @@ async function http_request({
                params: request_params,
                ...request_axios_props
             };
+            let effective_data = (typeof effective_data === "function" ? data(axios_config) : data);
+            if(typeof effective_data === "object")
+               effective_data = JSON.stringify(effective_data);
             if(request_method === "POST")
             {
-               let data = this.data;
-               if(typeof this.data === "function")
-                  data = this.data.call(this, axios_config);
-               Axios.post(request_endpoint, data, axios_config).then((response) => {
+               Axios.post(request_endpoint, effective_data, axios_config).then((response) => {
                   let rtn = response;
                   if(typeof response_handler === "function")
                      rtn = response_handler.call(this, response);
@@ -78,8 +78,7 @@ async function http_request({
             }
             else if(request_method === "PUT")
             {
-               const request_data = (typeof data === "function" ? data() : data);
-               Axios.put(this.endpoint, request_data, axios_config).then((response) => {
+               Axios.put(this.endpoint, effective_data, axios_config).then((response) => {
                   let rtn = response;
                   if(typeof response_handler === "function")
                      rtn = response_handler.call(this, response);
