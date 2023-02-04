@@ -51,7 +51,7 @@ async function http_request({
                params: request_params,
                ...request_axios_props
             };
-            let effective_data = (typeof effective_data === "function" ? data(axios_config) : data);
+            let effective_data = (typeof data === "function" ? data(axios_config) : data);
             if(typeof effective_data === "object")
                effective_data = JSON.stringify(effective_data);
             if(request_method === "POST")
