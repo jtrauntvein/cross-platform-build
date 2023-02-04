@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/jtrauntvein/cross-platform-build#readme",
   "devDependencies": {
-    "eslint": "^8.22.0"
+    "eslint": "^8.33.0"
   },
   "dependencies": {
     "axios": "^0.27.2",
-    "commander": "^9.3.0",
+    "commander": "^9.5.0",
     "prompts": "^2.4.2",
     "sharp": "^0.30.7",
     "svg-to-ico": "^1.0.11"
