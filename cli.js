@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require("node:fs");
 const path = require("node:path");
-const { program: parser } = require("Commander");
+const { program: parser } = require("commander");
 const Logger = require("./src/Logger");
 const prompts = require("prompts");
 const Target = require("./src/Target");

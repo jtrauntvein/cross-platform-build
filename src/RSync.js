@@ -144,8 +144,8 @@ sync_dir = async function(target, source, dest, filter, delete_orphaned, filter_
  * 
  * @param {string} options.name Specifies the name of the new target.
  * @param {string[] = []} options.depends Specifies the targets that must be built before this target can be built.
- * @param {string} options.source Specifies the source path from which files will be copied.
- * @param {string} options.dest Specifies the path to which the source files will nbe copied.
+ * @param {string | function<string>} options.source Specifies the source path from which files will be copied.
+ * @param {string | function<string>} options.dest Specifies the path to which the source files will nbe copied.
  * @param {boolean = true} options.delete_orphaned Set to true if files that are in the dest path that are not present
  * in the source path should be copied.
  * @param {function<string>?} options.filter_orphan Optionally specifies a function that will be called for any orphaned object 
@@ -171,7 +171,9 @@ async function rsync({
       depends,
       options,
       action: async function() {
-         await sync_dir(this, source, dest, filter, delete_orphaned, filter_orphan);
+         const effective_source = (typeof source === "function" ? source() : source);
+         const effective_dest = (typeof dest === "function" ? dest() : dest);
+         await sync_dir(this, effective_source, effective_dest, filter, delete_orphaned, filter_orphan);
          while(this.pending_ops.length > 0)
          {
             const op = this.pending_ops[0];

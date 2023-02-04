@@ -23,7 +23,7 @@ async function target({
    name,
    depends =  [],
    options = { },
-   action = function() {}
+   action = async function() {}
 }) {
    const rtn = { name, depends, action, options };
    all_targets[rtn.name] = rtn;
