@@ -67,7 +67,7 @@ async function http_request({
             }
             else if(request_method === "GET")
             {
-               Axios.get(this.endpoint, axios_config).then((response) => {
+               Axios.get(request_endpoint, axios_config).then((response) => {
                   let rtn = response;
                   if(typeof response_handler === "function")
                      rtn = response_handler.call(this, response);
@@ -78,7 +78,7 @@ async function http_request({
             }
             else if(request_method === "PUT")
             {
-               Axios.put(this.endpoint, effective_data, axios_config).then((response) => {
+               Axios.put(request_endpoint, effective_data, axios_config).then((response) => {
                   let rtn = response;
                   if(typeof response_handler === "function")
                      rtn = response_handler.call(this, response);

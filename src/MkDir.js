@@ -22,7 +22,7 @@ async function mk_dir({
       depends,
       options,
       action: async function() {
-         const effective_path = (typeof path === "function" | path);
+         const effective_path = (typeof path === "function" ? path() : path);
          const rtn = await fs.mkdir(effective_path, {
             recursive: true
          });
