@@ -71,19 +71,18 @@ async function docker_container({
       program_name: "docker",
       argv: [
          "run",
+         ...env.map((variable) => {
+            return `-e${variable}`
+         }),
          "-t",
          "--rm",
-         ...env.map((variable) => {
-            return `-e ${variable}`
-         }),
          "--mount",
          `type=bind,src=${cwd},dst=${mount_point},consistency=cached`,
          image,
          entry_point,
          ...entry_point_argv
       ],
-      cwd,
-      env
+      cwd
    });
 }
 
