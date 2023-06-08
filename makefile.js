@@ -38,4 +38,13 @@ module.exports = async function(options) {
       ignore_error: true,
       options
    });
+   await tools.write_c_header({
+      name: "write-c-header",
+      file_name: path.join(os.homedir(), "temp", "generated-header.h"),
+      data: {
+         macro1: "This should be the first macro encoded as a string",
+         macro2: 3.14159,
+      },
+      options
+   })
 };

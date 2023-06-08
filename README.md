@@ -33,7 +33,7 @@ npx cross-platform-build target1 target2 ...
 
 The cli has the following syntax:
 
-```
+``` text
 command-line := "cross-platform-build" [ ("-f" | "--file") makefile-name ] { target-name }.
 makefile-name := string. ; javascript file name
 target-name := string.   ; name of a target defined in the makefile.
@@ -83,12 +83,11 @@ The target() function is general-purpose in that it associates the target name w
 * options (object, required): Specifies an options argument that is created by the module when the task is being executed within a sub-project.  
 An options object will be passed as the first parameter of the entry-point of a makefile.js module.  At minimum, this object should be passed.
 The properties of this object include the following:
-   * target_prefix (string): Specifies the name of the sub-project
-   * target_path (string): Specifies the path to the sub-project directory
-   * other application defined properties
+  * target_prefix (string): Specifies the name of the sub-project
+  * target_path (string): Specifies the path to the sub-project directory
+  * other application defined properties
 
 The return value from this function will be the object that was generated to track the state of the target and its options.
-
 
 #### 3.1.2 - execute()
 
@@ -106,13 +105,12 @@ The execute() function returns a target that will invoke a child process.  The p
 * check_inputs (object, optional): Optionally specifies properties "sources" and "outputs" which should both be an array of strings.
   the "sources" property identifies the list of file names (with paths relative to the target working dir) that are operated upon
   and the "outputs" property also identifies a list of file names (with paths relative to the target working dir) that are expected
-  to be output by the process.  If any of the expected inputs are missing or have last changed time stamps that are newer than 
+  to be output by the process.  If any of the expected inputs are missing or have last changed time stamps that are newer than
   any of the outputs, then the target program will be run.  If not, the target program will not be run.  If this parameter is not specified,
   the target program will be run unconditionally.
 * options (object, required): Specifies the options object passed to the makefile.js entry-point.
 
 The return value for this function will be the object that is generated to track the state of the task.
-
 
 #### 3.1.3 - make_cdecl()
 
@@ -127,7 +125,6 @@ The make_cdecl() function generates a target that will operate on any file and w
 * options (object, required): Specifies the options parameter of the makefile.js entry-point function.
 
 The return value from this function will be the object that is generated to track the state of the task.
-
 
 #### 3.1.4 - msbuild()
 
@@ -159,9 +156,7 @@ The http_request() function generates a target that will invoke an HTTP based se
 * response_handler (function<object>, optional): Specifies a call-back that will process the response data from the request.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
-
 The return value of this function will be the object that is created the track the state of the target.
-
 
 #### 3.1.6 - pull_docker_container()
 
@@ -174,7 +169,6 @@ The pull_docker_container() function generates a target that will run docker in 
 * image (string, required): Specifies the URL for the container to pull.
 * env (string[], optional): Specifies environment variables that must be defined while pulling the docker image.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
-
 
 #### 3.1.7 - docker_container()
 
@@ -190,7 +184,6 @@ The docker_container() function generates a target that will run a targetting pr
 * env (string[], optional): Specifies the environment variables that should be defined within the docker container.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
-
 #### 3.1.8 mk_dir()
 
 The mk_dir() function generates a target that will ensure the existence of a directory for a given path and will create any parent directories for that path as necessary.  The options for this function are as follows:
@@ -201,7 +194,6 @@ The mk_dir() function generates a target that will ensure the existence of a dir
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value from this function will be the object that was created to track the status of the target.
-
 
 #### 3.1.9 copy_file()
 
@@ -215,7 +207,6 @@ The copy_file() function generates a target that will copy one or more files to 
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value from this function will be the object that was created to track the target.
-
 
 #### 3.1.10 rsync()
 
@@ -259,7 +250,6 @@ The svg_to_ico() function creates a target that will convert if needed an SVG fi
 
 The return value will be the object created to track the target.
 
-
 #### 3.1.13 - svg_to_png()
 
 The svg_to_png() function creates a target that will convert if needed an SVG file to a PNG file with the given number of pixels.  It uses the sharp node module to do this work.  The parameters to this function are as follows:
@@ -290,8 +280,8 @@ The return value for this function will be the object that is created to track t
 #### 3.1.15 wait_for_sync()
 
 The wait_for_sync function will generate a target that will watch for two files: a reference and a target.
-The function will read the last-modified time of the reference file and will then watch for the target file.  When 
-the target file exists and has a last modified time that is newer than that of the reference file, the target will 
+The function will read the last-modified time of the reference file and will then watch for the target file.  When
+the target file exists and has a last modified time that is newer than that of the reference file, the target will
 successfully end.
 
 The parameters for this function include the following:
@@ -303,7 +293,7 @@ The parameters for this function include the following:
 * timeout (number, optional): Specifies the amount of time that the target will wait for the target file to be updated before
 it reports that the target build has failed. Can also be a function that is evaluated at the time when the target is built.
 * delay_after (number, optional): Optionally specifies the number of seconds to delay after a match is made.  Defaults to zero. Can also be a function that is evaluated at the time when the target is built.
-* options (object, required): Specifies the options parameter passed to the makefile.js entry-point. 
+* options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value for this function will be the object that is created to track the target.
 
@@ -314,12 +304,33 @@ The rename() function will generate a target that will rename a specified file o
 * name (string, required): Specifies the name of the target
 * depends (string[], optional): Specifies the collection of names for targets that must be built before this target is built.
 * source (string, required): Specifies the path and name of the file or directory to be renamed. Can also be a function that is evaluated at the time when the target is built.
-* dest (string, required): Specifies the new name that should be assigned to the directory or file.  If this parameter specifies its own path, the object 
+* dest (string, required): Specifies the new name that should be assigned to the directory or file.  If this parameter specifies its own path, the object
 at source will be moved to that path.  Otherwise, the source object will be renamed in place. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry point.
 
 The return value will be the object used to track the target.
 
+#### 3.1.17 `write_file()`
+
+This function generates a target that will write the provided content (string or buffer) to a file only if the content
+is different from the current file content.  This function expects the following parameters:
+
+* `name (string, required)`: Specifies the name of the target.
+* `depends (string[], optional)`: Specifies the names of targets that must be built before this target.
+* `file_name (string, required)`: Specifies the name of the file to be written.
+* `contents (string | buffer, required)`: Specifies the content to be written.
+* `options (object, required)`: Must specify the `options` object passed to the makefile function by the utility.
+
+#### 3.1.18 `write_c_header()`
+
+This function generates a target that will render the provided name/value pairs as preprocessor defines within a repetition guard.  The file will only be written if the generated content differs from existing.  It expects the following parameters:
+
+* `name (string, required)`: Specifies the name of the target
+* `depends (string[], optional)`: Specifies the list of target names that must be built before this target.
+* `file_name (string, required)`: Specifies the name of the file to be written.
+* `data (object, required)`: Specifies the data that should be used to generate the `#define` statements in the output file.
+* `render (function, optional)`: Specifies a call-back function that will be passed each key/value pair and return the string that should be written for the macro definition.  By default, the return value from `JSON.stringify()` will be used.
+* `options (object, required)`: Must specify the options object passed to the makefile function invoked by the utility.
 
 ### 3.2 - Helper Functions
 
@@ -373,4 +384,3 @@ can be specified as the "logger" property of the options parameter for all targe
 
 * output (function(string), optional): Specifies how the log messages will be written.  If not specified, all messages will be written to the process.stdout handle.
 * log_level (string | number, optional): Specifies the maximum level of message that will be written to the log.  This can be one of the properties of the Logger.all_log_levels static property or it can be a string that names one of those properties.
-

@@ -16,6 +16,7 @@ const SvgToIco = require("./SvgToIco");
 const SvgToPng = require("./SvgToPng");
 const WaitForSync = require("./WaitForSync");
 const Rename = require("./Rename");
+const WriteFile = require("./WriteFile");
 
 
 module.exports = {
@@ -39,6 +40,8 @@ module.exports = {
    svg_to_png: SvgToPng.svg_to_png,
    rm: Rm.rm,
    wait_for_sync: WaitForSync.wait_for_sync,
-   rename: Rename.rename
+   rename: Rename.rename,
+   write_file: WriteFile.write_file,
+   write_c_header: WriteFile.write_c_header
 };
 
