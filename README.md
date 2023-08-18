@@ -332,6 +332,18 @@ This function generates a target that will render the provided name/value pairs 
 * `render (function, optional)`: Specifies a call-back function that will be passed each key/value pair and return the string that should be written for the macro definition.  By default, the return value from `JSON.stringify()` will be used.
 * `options (object, required)`: Must specify the options object passed to the makefile function invoked by the utility.
 
+#### 3.1.19 `gitlab_trigger_pipeline`
+
+This function generates a target that will interact with the GitLab API to trigger a build pipeline.  It expects the following
+parameters:
+
+* `name (string, required)`: Specifies the name for the new target.
+* `depends (string[], optional)`: Specifies the list of target names that must be successfully build before the build for this target will start.
+* `project (string, required)`: Specifies the GitLab project identifier to be included in the URL.
+* `token (string, required)`: Specifies the access token for the project.
+* `ref (string, required)`: Specifies the branch or label for the project.
+* `options (object, required)`: Must specify the options object that is passed to the makefile function when it is invoked by the utility.
+
 ### 3.2 - Helper Functions
 
 The cross-platform-build package also provides two helper functions that, while they do not directly generate any targets themselves, are useful for incorporating a sub-project or for dynamically selecting contents from a directory.  These functions are as follows:

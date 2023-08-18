@@ -17,6 +17,7 @@ const SvgToPng = require("./SvgToPng");
 const WaitForSync = require("./WaitForSync");
 const Rename = require("./Rename");
 const WriteFile = require("./WriteFile");
+const GitlabTriggerPipeline = require("./GitlabTriggerPipeline");
 
 
 module.exports = {
@@ -28,6 +29,7 @@ module.exports = {
    subdir: Subdir.subdir,
    pick_dir_targets: PickDirTargets.pick_dir_targets,
    http_request: HttpRequest.http_request,
+   gitlab_trigger_pipeline: GitlabTriggerPipeline.gitlab_trigger_pipeline,
    msbuild: MsBuild.msbuild,
    docker_container: DockerContainer.docker_container,
    pull_docker_container: DockerContainer.pull_docker_container,
