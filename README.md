@@ -342,6 +342,7 @@ parameters:
 * `project (string, required)`: Specifies the GitLab project identifier to be included in the URL.
 * `token (string, required)`: Specifies the access token for the project.
 * `ref (string, required)`: Specifies the branch or label for the project.
+* `variables (object, optional)`: Specifies the environment variables that should be created for the CI/CD process.
 * `options (object, required)`: Must specify the options object that is passed to the makefile function when it is invoked by the utility.
 
 ### 3.2 - Helper Functions

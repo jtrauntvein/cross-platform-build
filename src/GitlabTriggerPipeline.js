@@ -9,6 +9,7 @@ const Axios = require("axios").default;
  * @property {string} token Specifies the access token to trigger the pipeline
  * @property {string} ref Specifies the branch or tag of the project to build
  * @param {object} options Must specify the options that were passed to the makefile function.
+ * @param {object?} variables Specifies the colllection of environment variables that will be passed to the CI/CD environment
  */
 /**
  * Triggers a pipeline on a GitLab project 
@@ -21,6 +22,7 @@ async function gitlab_trigger_pipeline({
    project,
    token,
    ref,
+   variables = {},
    options
 }) {
    const rtn = await Target.target({
@@ -31,7 +33,8 @@ async function gitlab_trigger_pipeline({
          return new Promise((accept, reject) => {
             const data = {
                token,
-               ref
+               ref,
+               variables
             };
             const url = `https://gitlab.com/api/v4/projects/${project}/trigger/pipeline`;
             Axios.postForm(url, data).then(() => {
