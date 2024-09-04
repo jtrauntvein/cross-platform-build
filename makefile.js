@@ -46,5 +46,11 @@ module.exports = async function(options) {
          macro2: 3.14159,
       },
       options
+   });
+   await tools.touch({
+      name: "touch-logview.svg",
+      depends: [],
+      source: "logview.svg",
+      options
    })
 };

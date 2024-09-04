@@ -18,7 +18,7 @@ const WaitForSync = require("./WaitForSync");
 const Rename = require("./Rename");
 const WriteFile = require("./WriteFile");
 const GitlabTriggerPipeline = require("./GitlabTriggerPipeline");
-
+const Touch = require("./Touch");
 
 module.exports = {
    Target,
@@ -44,6 +44,7 @@ module.exports = {
    wait_for_sync: WaitForSync.wait_for_sync,
    rename: Rename.rename,
    write_file: WriteFile.write_file,
-   write_c_header: WriteFile.write_c_header
+   write_c_header: WriteFile.write_c_header,
+   touch: Touch.touch
 };
 
