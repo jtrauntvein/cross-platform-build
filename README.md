@@ -345,6 +345,19 @@ parameters:
 * `variables (object, optional)`: Specifies the environment variables that should be created for the CI/CD process.
 * `options (object, required)`: Must specify the options object that is passed to the makefile function when it is invoked by the utility.
 
+#### 3.1.20 `touch()`
+
+This function generates a target that will set the last modified time on one or more given files to match
+the current system time.  It expects the following parameters:
+
+* `name` (string, required): specifies the name for the new target
+* `depends` (string[], optional): specifies the list of target names that must be successfully build before
+this target is executed
+* `source` (string | string[], required): specifies the path(s) to the file(s) that will be touched.  
+* `options` (object, required): must specify the `options` object passed to the makefile function when 
+it is invoked by the utility.
+
+
 ### 3.2 - Helper Functions
 
 The cross-platform-build package also provides two helper functions that, while they do not directly generate any targets themselves, are useful for incorporating a sub-project or for dynamically selecting contents from a directory.  These functions are as follows:
