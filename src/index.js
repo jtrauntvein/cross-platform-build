@@ -19,6 +19,7 @@ const Rename = require("./Rename");
 const WriteFile = require("./WriteFile");
 const GitlabTriggerPipeline = require("./GitlabTriggerPipeline");
 const Touch = require("./Touch");
+const MakeCSecrets = require("./MakeCSecrets");
 
 module.exports = {
    Target,
@@ -45,6 +46,7 @@ module.exports = {
    rename: Rename.rename,
    write_file: WriteFile.write_file,
    write_c_header: WriteFile.write_c_header,
-   touch: Touch.touch
+   touch: Touch.touch,
+   make_csecrets: MakeCSecrets.make_csecrets
 };
 

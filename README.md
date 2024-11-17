@@ -3,6 +3,36 @@
 High level build platform that can be used to generate build targets with dependencies.  The build tool,
 when invoked, will look for a file, makefile.js, that should export a single async function that will make calls to various platform functions that will generate targets.
 
+- [1 - Installing cross-platform-build](#1-installing-cross-platform-build)
+- [2 - Running cross-platform-build](#2-running-cross-platform-build)
+- [3 - Creating a Makefile](#3-creating-a-makefile)
+  - [3.1 - Target Types](#31-target-types)
+    - [3.1.1 - target()](#311-target)
+    - [3.1.2 - execute()](#312-execute)
+    - [3.1.3 - make\_cdecl()](#313-make_cdecl)
+    - [3.1.4 - msbuild()](#314-msbuild)
+    - [3.1.5 - http\_request()](#315-http_request)
+    - [3.1.6 - pull\_docker\_container()](#316-pull_docker_container)
+    - [3.1.7 - docker\_container()](#317-docker_container)
+    - [3.1.8 mk\_dir()](#318-mk_dir)
+    - [3.1.9 copy\_file()](#319-copy_file)
+    - [3.1.10 rsync()](#3110-rsync)
+    - [3.1.11 pdf\_latex()](#3111-pdf_latex)
+    - [3.1.12 - svg\_to\_ico()](#3112-svg_to_ico)
+    - [3.1.13 - svg\_to\_png()](#3113-svg_to_png)
+    - [3.1.14 rm()](#3114-rm)
+    - [3.1.15 wait\_for\_sync()](#3115-wait_for_sync)
+    - [3.1.16 rename()](#3116-rename)
+    - [3.1.17 `write_file()`](#3117-write_file)
+    - [3.1.18 `write_c_header()`](#3118-write_c_header)
+    - [3.1.19 `gitlab_trigger_pipeline`](#3119-gitlab_trigger_pipeline)
+    - [3.1.20 `touch()`](#3120-touch)
+    - [3.1.21 `make_csecrets()`](#3121-make_csecrets)
+  - [3.2 - Helper Functions](#32-helper-functions)
+    - [3.2.1 - pick\_dir\_targets()](#321-pick_dir_targets)
+    - [3.2.2 - subdir()](#322-subdir)
+    - [3.2.3 - Logger()](#323-logger)
+
 ## 1 - Installing cross-platform-build
 
 The easiest way to use the cross-platform build package is to install it globally:
@@ -357,6 +387,25 @@ this target is executed
 * `options` (object, required): must specify the `options` object passed to the makefile function when 
 it is invoked by the utility.
 
+#### 3.1.21 `make_csecrets()`
+
+This function generates C or C++ code from a `secrets` object which is interpreted as map of strings that will
+declare the encrypted version of those keys using `AES-256-GCM`.  The purpose of the generated structure is
+to allow secrets to be included in C/C++ application source but not reveal the plain text of those secrets.
+This function expects the following parameters:
+
+* `name` (string, required): specifies the name for the new target
+* `depends` (string[], required): specifies the targets that should bn built before this target
+* `output` (string, required): specifies the name of the source code file that will be generated
+* `variable_name` (string, required): specifies the name that will be assigned in the source file to the generated
+   structure.  This name will also form the basis of the structure declarations that are generated as well.
+* `namespaces` (string[], optional): specifies the collection of C++ namespaces in which the structure types and 
+   structure variable.  If empty, the declarations will be global variables.
+* `should_write` (function<bool>, optional): optional function that will be evaluated when the target is built
+   and will control whether the asurce file will be generated.
+* `secrets` (object, required): specifies the secrets that will be encrypted in the generated file.  Each property
+   will be interpreted as a string.
+* `options` (object, required): should specify the options structure passed to the makefile entry point.
 
 ### 3.2 - Helper Functions
 
