@@ -1,6 +1,8 @@
 const MakeCDecl = require("./MakeCDecl");
 const PickDirTargets = require("./PickDirTargets");
 const WaitForSync = require("./WaitForSync");
+const MakeCSecrets = require("./MakeCSecrets");
+const path = require("node:path");
 
 module.exports = async function(options) {
    const match_js = /\.js$/;
@@ -25,6 +27,20 @@ module.exports = async function(options) {
       reference: "WaitForSync.js",
       target: "WaitForSync.js.h",
       delay_after: 10,
+      options
+   });
+   await MakeCSecrets.make_csecrets({
+      name: "src/make-secrets",
+      depends: [],
+      output: path.join("..", "_assets", "secrets.h"),
+      variable_name: "my_secrets",
+      namespaces: [ "Csi", "SigningSecrets" ],
+      secrets: {
+         low: "low",
+         medium: "medium",
+         high: "high",
+         top: "top"
+      },
       options
    });
 };
