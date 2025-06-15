@@ -214,6 +214,22 @@ The docker_container() function generates a target that will run a targetting pr
 * env (string[], optional): Specifies the environment variables that should be defined within the docker container.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
+#### `docker_build()`
+
+The async `docker_build()` function will create a target that will execute the `docker build` command with appropriate
+parameters to build a docker image.  This function requires the following parameters:
+
+* `name` (string, required): Specifies the name for the target to be created.
+* `depends` (string[], required): Specifies an array of names for targets that must be built before this target can be built.
+* `image_name` (string, required): Specifies the name that will be applied to the docker image as well as any tags that
+docker will assign to this image
+* `docker_file` (string, optional): Optionally specifies the name of the docker file that describes the build instructions
+for the image.  The default value, if used, will refer to the `dockerfile` file in the directory from which this 
+target will be built.
+* `working_dir` (string, optional): Optionally specifies the directory from which `docker build` will be executed
+* `options` (object, required): Must specify the `options` parameter (or an object derived from that parameter) that is passed
+to the exported function for your `makefile.js` script.
+
 #### 3.1.8 mk_dir()
 
 The mk_dir() function generates a target that will ensure the existence of a directory for a given path and will create any parent directories for that path as necessary.  The options for this function are as follows:
@@ -406,6 +422,29 @@ This function expects the following parameters:
 * `secrets` (object, required): specifies the secrets that will be encrypted in the generated file.  Each property
    will be interpreted as a string.
 * `options` (object, required): should specify the options structure passed to the makefile entry point.
+
+#### `cmake_configure()`
+
+This async function generates a target that will invoke the `cmake` command from a given directory
+and with a given generator and definitions.  It expects the following parameters:
+
+* `name` (string, required): Specifies the name of the target to be created
+* `depends` (string[], required): Specifies the list of target names that muct be built before this
+   target is built.
+* `source_dir` (string, optional): Optionally specifies the location of the source directory from which
+the cmake build files will be configured.  The default value is the directory of the `makefile.js` from which
+this function was called.
+* `build_dir` (string, required): Specifies the directory from where the cmake configuration files will be
+created or updated.  CMake recommends that this should be a directory separate from that of the `source_dir`.
+* `generator` (string, optional): Specifies the name of the build system generator that cmake will create.  By default,
+this will be the name of the native make utility for the targetted platform (make for Linux and nmake for windows).
+* `variables` (object[], optional): Optionally specifies an array of objects that will define variables to be applied
+within the smake script.  Each of these objects must have the following properties:
+   * `name` (string, required): Specifies the name of the variable within the cmake script
+   * `type` (string, optional): Optionally specifies the type for the variable.  Defaults to `string`
+   * `value` (string, required): Specifies the value that should be assigned to the variable.
+* `options` (object, required): Must specify the value of or a value derived from the `options` parameter
+passed to the `makefile.js` exported function that is being called by cross-platform-build.
 
 ### 3.2 - Helper Functions
 

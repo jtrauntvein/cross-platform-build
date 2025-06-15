@@ -20,6 +20,8 @@ const WriteFile = require("./WriteFile");
 const GitlabTriggerPipeline = require("./GitlabTriggerPipeline");
 const Touch = require("./Touch");
 const MakeCSecrets = require("./MakeCSecrets");
+const CMake = require("./CMake.js");
+const DockerBuild = require("./DockerBuild.js");
 
 module.exports = {
    Target,
@@ -47,6 +49,8 @@ module.exports = {
    write_file: WriteFile.write_file,
    write_c_header: WriteFile.write_c_header,
    touch: Touch.touch,
-   make_csecrets: MakeCSecrets.make_csecrets
+   make_csecrets: MakeCSecrets.make_csecrets,
+   cmake_configure: CMake.cmake_configure,
+   docker_build: DockerBuild.docker_build 
 };
 
