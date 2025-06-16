@@ -33,8 +33,9 @@ async function docker_build({
       program_name: "docker",
       argv: [
          "-t",
-         docker_file,
-         image_name
+         image_name,
+         "-f",
+         docker_file
       ],
       cwd: working_dir,
       env,
