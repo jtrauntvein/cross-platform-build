@@ -27,16 +27,16 @@ async function docker_build({
    working_dir = process.cwd(),
    options
 }) {
+   const argv = [ 
+      "-f", docker_file, 
+      "--secret", "id=npmrc,src=$HOME/.npmrc"]
+      "-t", image_name,
+      working_dir
    return await execute({
       name,
       depends,
       program_name: "docker",
-      argv: [
-         "-t",
-         image_name,
-         "-f",
-         docker_file
-      ],
+      argv,
       cwd: working_dir,
       env,
       options

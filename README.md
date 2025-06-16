@@ -1,39 +1,43 @@
-# cross-platform-build
+# cross-platform-build <!-- omit in toc -->
 
 High level build platform that can be used to generate build targets with dependencies.  The build tool,
 when invoked, will look for a file, makefile.js, that should export a single async function that will make calls to various platform functions that will generate targets.
 
-- [1 - Installing cross-platform-build](#1-installing-cross-platform-build)
-- [2 - Running cross-platform-build](#2-running-cross-platform-build)
-- [3 - Creating a Makefile](#3-creating-a-makefile)
-  - [3.1 - Target Types](#31-target-types)
-    - [3.1.1 - target()](#311-target)
-    - [3.1.2 - execute()](#312-execute)
-    - [3.1.3 - make\_cdecl()](#313-make_cdecl)
-    - [3.1.4 - msbuild()](#314-msbuild)
-    - [3.1.5 - http\_request()](#315-http_request)
-    - [3.1.6 - pull\_docker\_container()](#316-pull_docker_container)
-    - [3.1.7 - docker\_container()](#317-docker_container)
-    - [3.1.8 mk\_dir()](#318-mk_dir)
-    - [3.1.9 copy\_file()](#319-copy_file)
-    - [3.1.10 rsync()](#3110-rsync)
-    - [3.1.11 pdf\_latex()](#3111-pdf_latex)
-    - [3.1.12 - svg\_to\_ico()](#3112-svg_to_ico)
-    - [3.1.13 - svg\_to\_png()](#3113-svg_to_png)
-    - [3.1.14 rm()](#3114-rm)
-    - [3.1.15 wait\_for\_sync()](#3115-wait_for_sync)
-    - [3.1.16 rename()](#3116-rename)
-    - [3.1.17 `write_file()`](#3117-write_file)
-    - [3.1.18 `write_c_header()`](#3118-write_c_header)
-    - [3.1.19 `gitlab_trigger_pipeline`](#3119-gitlab_trigger_pipeline)
-    - [3.1.20 `touch()`](#3120-touch)
-    - [3.1.21 `make_csecrets()`](#3121-make_csecrets)
-  - [3.2 - Helper Functions](#32-helper-functions)
-    - [3.2.1 - pick\_dir\_targets()](#321-pick_dir_targets)
-    - [3.2.2 - subdir()](#322-subdir)
-    - [3.2.3 - Logger()](#323-logger)
+## Table of Contents <!-- omit in toc -->
 
-## 1 - Installing cross-platform-build
+- [1. Installing cross-platform-build](#1-installing-cross-platform-build)
+- [2. Running cross-platform-build](#2-running-cross-platform-build)
+- [3. Creating a Makefile](#3-creating-a-makefile)
+  - [3.1. Target Types](#31-target-types)
+    - [3.1.1. target()](#311-target)
+    - [3.1.2. execute()](#312-execute)
+    - [3.1.3. make\_cdecl()](#313-make_cdecl)
+    - [3.1.4. msbuild()](#314-msbuild)
+    - [3.1.5. http\_request()](#315-http_request)
+    - [3.1.6. pull\_docker\_container()](#316-pull_docker_container)
+    - [3.1.7. docker\_container()](#317-docker_container)
+    - [3.1.8. docker\_build()](#318-docker_build)
+    - [3.1.9. mk\_dir()](#319-mk_dir)
+    - [3.1.10. copy\_file()](#3110-copy_file)
+    - [3.1.11. rsync()](#3111-rsync)
+    - [3.1.12. pdf\_latex()](#3112-pdf_latex)
+    - [3.1.13. svg\_to\_ico()](#3113-svg_to_ico)
+    - [3.1.14. svg\_to\_png()](#3114-svg_to_png)
+    - [3.1.15. rm()](#3115-rm)
+    - [3.1.16. wait\_for\_sync()](#3116-wait_for_sync)
+    - [3.1.17. rename()](#3117-rename)
+    - [3.1.18. write\_file()](#3118-write_file)
+    - [3.1.19. write\_c\_header()](#3119-write_c_header)
+    - [3.1.20. gitlab\_trigger\_pipeline](#3120-gitlab_trigger_pipeline)
+    - [3.1.21. touch()](#3121-touch)
+    - [3.1.22. make\_csecrets()](#3122-make_csecrets)
+    - [3.1.23. cmake\_configure()](#3123-cmake_configure)
+  - [3.2. Helper Functions](#32-helper-functions)
+    - [3.2.1. pick\_dir\_targets()](#321-pick_dir_targets)
+    - [3.2.2. subdir()](#322-subdir)
+    - [3.2.3. Logger()](#323-logger)
+
+## 1. Installing cross-platform-build
 
 The easiest way to use the cross-platform build package is to install it globally:
 
@@ -59,7 +63,7 @@ After successful local installation, the program can be invoked using the npx co
 npx cross-platform-build target1 target2 ...
 ```
 
-## 2 - Running cross-platform-build
+## 2. Running cross-platform-build
 
 The cli has the following syntax:
 
@@ -71,7 +75,7 @@ target-name := string.   ; name of a target defined in the makefile.
 
 If the -f or --file option is not specified, the builder will look for a "makefile.js" file in the current working directory.  This file needs to be a common JS module that exports a single asynchronous function.  The builder will load the module and execute the exported function.  Following that, the builder will execute the build targets that are specified and will ensure that any dependencies of those targets are built first.  If no target names are specified on the command line, the builder will build all targets that were created in the makefile.
 
-## 3 - Creating a Makefile
+## 3. Creating a Makefile
 
 Consider the following example makefile:
 
@@ -96,11 +100,11 @@ module.exports = async function(options) {
 };
 ```
 
-### 3.1 - Target Types
+### 3.1. Target Types
 
 The cross-platform-build module defines functions that can be called to generate specific types of targets.  This list is extensible in that the application could define its own custom target types.  The pre-built target types are described in this section.
 
-#### 3.1.1 - target()
+#### 3.1.1. target()
 
 The target() function is general-purpose in that it associates the target name with an application-defined call-back function that carries out the work of building the target.  This function also serves as the basis for any more specialised target type.  The parameters for this function are as follows:
 
@@ -119,7 +123,7 @@ The properties of this object include the following:
 
 The return value from this function will be the object that was generated to track the state of the target and its options.
 
-#### 3.1.2 - execute()
+#### 3.1.2. execute()
 
 The execute() function returns a target that will invoke a child process.  The parameters for this function are as follows:
 
@@ -142,7 +146,7 @@ The execute() function returns a target that will invoke a child process.  The p
 
 The return value for this function will be the object that is generated to track the state of the task.
 
-#### 3.1.3 - make_cdecl()
+#### 3.1.3. make_cdecl()
 
 The make_cdecl() function generates a target that will operate on any file and will generate a target file that formats the contents of that file as a C or C++ declaration of an array that can be linked into a program as a resource.  The output file will not be regenerated if the output file already exists and the last modified time of that file is greater than the last modified time of the source file.  This function accepts the following parameters:
 
@@ -156,7 +160,7 @@ The make_cdecl() function generates a target that will operate on any file and w
 
 The return value from this function will be the object that is generated to track the state of the task.
 
-#### 3.1.4 - msbuild()
+#### 3.1.4. msbuild()
 
 The msbuild() function generates a target derived from the execute() target type that will invoke the Visual Studio msbuild tool with a given project, target configuration, and optional architecture.  The arguments for this function are as follows:
 
@@ -171,7 +175,7 @@ The msbuild() function generates a target derived from the execute() target type
 
 The return value of this function will be the object that was allocated to track the state of the target.
 
-#### 3.1.5 - http_request()
+#### 3.1.5. http_request()
 
 The http_request() function generates a target that will invoke an HTTP based service using the Axios node package.  It supports GET, PUT, and POST HTTP methods.  The arguments for this function are as follows:
 
@@ -188,7 +192,7 @@ The http_request() function generates a target that will invoke an HTTP based se
 
 The return value of this function will be the object that is created the track the state of the target.
 
-#### 3.1.6 - pull_docker_container()
+#### 3.1.6. pull_docker_container()
 
 The pull_docker_container() function generates a target that will run docker in a child process in order to pull a remote docker container image.
 
@@ -200,7 +204,7 @@ The pull_docker_container() function generates a target that will run docker in 
 * env (string[], optional): Specifies environment variables that must be defined while pulling the docker image.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
-#### 3.1.7 - docker_container()
+#### 3.1.7. docker_container()
 
 The docker_container() function generates a target that will run a targetting process within a docker container.  The working directory for the target will be mounted as a volume within the docker container.  The options for this function are as follows:
 
@@ -214,7 +218,7 @@ The docker_container() function generates a target that will run a targetting pr
 * env (string[], optional): Specifies the environment variables that should be defined within the docker container.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
-#### `docker_build()`
+#### 3.1.8. docker_build()
 
 The async `docker_build()` function will create a target that will execute the `docker build` command with appropriate
 parameters to build a docker image.  This function requires the following parameters:
@@ -230,7 +234,7 @@ target will be built.
 * `options` (object, required): Must specify the `options` parameter (or an object derived from that parameter) that is passed
 to the exported function for your `makefile.js` script.
 
-#### 3.1.8 mk_dir()
+#### 3.1.9. mk_dir()
 
 The mk_dir() function generates a target that will ensure the existence of a directory for a given path and will create any parent directories for that path as necessary.  The options for this function are as follows:
 
@@ -241,7 +245,7 @@ The mk_dir() function generates a target that will ensure the existence of a dir
 
 The return value from this function will be the object that was created to track the status of the target.
 
-#### 3.1.9 copy_file()
+#### 3.1.10. copy_file()
 
 The copy_file() function generates a target that will copy one or more files to a given directory and will also clone the created time and last modified time for the copied files.  The parameters for this function are as follows:
 
@@ -254,7 +258,7 @@ The copy_file() function generates a target that will copy one or more files to 
 
 The return value from this function will be the object that was created to track the target.
 
-#### 3.1.10 rsync()
+#### 3.1.11. rsync()
 
 The rsync() function will generate a target that will use the rsyncjs node module to mirror the contents of a destination directory with the contents of a source directory.  The parameters for this function are as follows:
 
@@ -269,7 +273,7 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 
 The return value from this function will be the object used to track the target.
 
-#### 3.1.11 pdf_latex()
+#### 3.1.12. pdf_latex()
 
 The pdf_latex() function will generate a target that will invoke pdflatex command (provided by TexLive or MikTex depending upon the host OS) repeatedly, if needed,
 to generate a PDF output document and to resolve any reference or layout issues that requires the TeX command to be run again.  The parameters for this function are as follows:
@@ -283,7 +287,7 @@ to generate a PDF output document and to resolve any reference or layout issues 
 
 The return value for this function will be the object that was created to track the target.
 
-#### 3.1.12 - svg_to_ico()
+#### 3.1.13. svg_to_ico()
 
 The svg_to_ico() function creates a target that will convert if needed an SVG file into an ICON format file.  This conversion will only take place if the dest file does not exist or is older than the source file.  The parameters for this function are as follows:
 
@@ -296,7 +300,7 @@ The svg_to_ico() function creates a target that will convert if needed an SVG fi
 
 The return value will be the object created to track the target.
 
-#### 3.1.13 - svg_to_png()
+#### 3.1.14. svg_to_png()
 
 The svg_to_png() function creates a target that will convert if needed an SVG file to a PNG file with the given number of pixels.  It uses the sharp node module to do this work.  The parameters to this function are as follows:
 
@@ -311,7 +315,7 @@ The svg_to_png() function creates a target that will convert if needed an SVG fi
 
 The return value will be the object that was allocated to track the target.
 
-#### 3.1.14 rm()
+#### 3.1.15. rm()
 
 The rm() function will generate a target that will delete a specified file or directory from a given path.  The parameters for this function are as follows:
 
@@ -323,7 +327,7 @@ The rm() function will generate a target that will delete a specified file or di
 
 The return value for this function will be the object that is created to track the target.
 
-#### 3.1.15 wait_for_sync()
+#### 3.1.16. wait_for_sync()
 
 The wait_for_sync function will generate a target that will watch for two files: a reference and a target.
 The function will read the last-modified time of the reference file and will then watch for the target file.  When
@@ -343,7 +347,7 @@ it reports that the target build has failed. Can also be a function that is eval
 
 The return value for this function will be the object that is created to track the target.
 
-#### 3.1.16 rename()
+#### 3.1.17. rename()
 
 The rename() function will generate a target that will rename a specified file or directory.  This function expects the following parameters:
 
@@ -356,7 +360,7 @@ at source will be moved to that path.  Otherwise, the source object will be rena
 
 The return value will be the object used to track the target.
 
-#### 3.1.17 `write_file()`
+#### 3.1.18. write_file()
 
 This function generates a target that will write the provided content (string or buffer) to a file only if the content
 is different from the current file content.  This function expects the following parameters:
@@ -367,7 +371,7 @@ is different from the current file content.  This function expects the following
 * `contents (string | buffer, required)`: Specifies the content to be written.
 * `options (object, required)`: Must specify the `options` object passed to the makefile function by the utility.
 
-#### 3.1.18 `write_c_header()`
+#### 3.1.19. write_c_header()
 
 This function generates a target that will render the provided name/value pairs as preprocessor defines within a repetition guard.  The file will only be written if the generated content differs from existing.  It expects the following parameters:
 
@@ -378,7 +382,7 @@ This function generates a target that will render the provided name/value pairs 
 * `render (function, optional)`: Specifies a call-back function that will be passed each key/value pair and return the string that should be written for the macro definition.  By default, the return value from `JSON.stringify()` will be used.
 * `options (object, required)`: Must specify the options object passed to the makefile function invoked by the utility.
 
-#### 3.1.19 `gitlab_trigger_pipeline`
+#### 3.1.20. gitlab_trigger_pipeline
 
 This function generates a target that will interact with the GitLab API to trigger a build pipeline.  It expects the following
 parameters:
@@ -391,7 +395,7 @@ parameters:
 * `variables (object, optional)`: Specifies the environment variables that should be created for the CI/CD process.
 * `options (object, required)`: Must specify the options object that is passed to the makefile function when it is invoked by the utility.
 
-#### 3.1.20 `touch()`
+#### 3.1.21. touch()
 
 This function generates a target that will set the last modified time on one or more given files to match
 the current system time.  It expects the following parameters:
@@ -403,7 +407,7 @@ this target is executed
 * `options` (object, required): must specify the `options` object passed to the makefile function when 
 it is invoked by the utility.
 
-#### 3.1.21 `make_csecrets()`
+#### 3.1.22. make_csecrets()
 
 This function generates C or C++ code from a `secrets` object which is interpreted as map of strings that will
 declare the encrypted version of those keys using `AES-256-GCM`.  The purpose of the generated structure is
@@ -423,7 +427,7 @@ This function expects the following parameters:
    will be interpreted as a string.
 * `options` (object, required): should specify the options structure passed to the makefile entry point.
 
-#### `cmake_configure()`
+#### 3.1.23. cmake_configure()
 
 This async function generates a target that will invoke the `cmake` command from a given directory
 and with a given generator and definitions.  It expects the following parameters:
@@ -446,11 +450,11 @@ within the smake script.  Each of these objects must have the following properti
 * `options` (object, required): Must specify the value of or a value derived from the `options` parameter
 passed to the `makefile.js` exported function that is being called by cross-platform-build.
 
-### 3.2 - Helper Functions
+### 3.2. Helper Functions
 
 The cross-platform-build package also provides two helper functions that, while they do not directly generate any targets themselves, are useful for incorporating a sub-project or for dynamically selecting contents from a directory.  These functions are as follows:
 
-#### 3.2.1 - pick_dir_targets()
+#### 3.2.1. pick_dir_targets()
 
 This asynchronous function uses fs.readdir() to read the contents of a directory and to invoke an application defined callback method for each member of the directory.  It is up to that call-back to call any functions that would create targets associated with those files.  This function expects structured arguments with the following properties:
 
@@ -481,7 +485,7 @@ module.exports = async function(options) {
 }
 ```
 
-#### 3.2.2 - subdir()
+#### 3.2.2. subdir()
 
 This asynchronous function temporarily changes the process current working directory to a specified sub-directory and processes the expected makefile in that subdirectory.  Any targets defined in that makefile will be added to the list of targets for the entire project so their names must reflect this by being unique.  Likely, the best approach is to prefix the target names within the sub-project with the directory name.
   
@@ -491,7 +495,7 @@ This function expects the following structured parameters:
 
 * options (object - required): Specifies the options that should be provided to any targets created in the sub-project.  If this function is itself invoked in a sub-project, it is imperative that the options passed to that sub-project's makefile are passed to any targets created.  In addition to the book-keeping properties in the options structure, the application can supply a "makefile_name" string property that will control the name of the makefile that the function will look for in the target directory.
 
-#### 3.2.3 - Logger()
+#### 3.2.3. Logger()
 
 This function is the constructor for a Logger object that is used to help manage logs outputs from the build engine.  Objects built using this constructor
 can be specified as the "logger" property of the options parameter for all targets.  This function accepts the following structured parameters:
