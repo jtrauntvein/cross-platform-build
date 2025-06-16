@@ -2,6 +2,11 @@ const { execute } = require("./Execute.js");
 const process = require("node:process");
 
 /**
+ * @typedef DockerBuildSecretType
+ * @property {string} name Specifies the name of the secret
+ * @property {string} source Specifies the path to the secret source file
+ */
+/**
  * @typedef DockerBuildParamsType Specifies the parameters for thr `docker_build` target type
  * @property {string} name Specifies the name for the target
  * @property {string[]} depends Specifies the names of targets that must be built before this targate
@@ -10,6 +15,7 @@ const process = require("node:process");
  * @property {string} image_name Specifies the name to be assigned to the created docer image
  * @property {string?} docker_file Specifies the name of the file to use for building the image
  * @property {string?} working_dir Specifies the path from which the container should be built.
+ * @property {DockerBuildSecretType?} secrets specifies any secrets that should be created for the build process.
  * @property {object} options Must specify the `options` object passed to or derived from the
  * options argument passed to the makefile exported function.
  */
@@ -23,15 +29,17 @@ async function docker_build({
    depends,
    env = {},
    image_name,
-   docker_file = ".",
+   docker_file = "dockerfile",
    working_dir = process.cwd(),
+   secrets = [],
    options
 }) {
-   const argv = [ 
-      "-f", docker_file, 
-      "--secret", "id=npmrc,src=$HOME/.npmrc"]
-      "-t", image_name,
-      working_dir
+   const argv = [ "build", "--file", docker_file ];
+   secrets.forEach((secret) => {
+      argv.push("--secret", `id=${secret.name},src=${secret.source}`)
+   });
+   argv.push("--tag", image_name);
+   argv.push(working_dir);
    return await execute({
       name,
       depends,
@@ -39,6 +47,7 @@ async function docker_build({
       argv,
       cwd: working_dir,
       env,
+      shell: true,
       options
    });
 }
