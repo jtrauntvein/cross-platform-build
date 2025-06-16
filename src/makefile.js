@@ -2,7 +2,9 @@ const MakeCDecl = require("./MakeCDecl");
 const PickDirTargets = require("./PickDirTargets");
 const WaitForSync = require("./WaitForSync");
 const MakeCSecrets = require("./MakeCSecrets");
+const { docker_build } = require("./DockerBuild");
 const path = require("node:path");
+const os = require("node:os");
 
 module.exports = async function(options) {
    const match_js = /\.js$/;
@@ -43,4 +45,14 @@ module.exports = async function(options) {
       },
       options
    });
+   await docker_build({
+      name: "src/test-docker_build",
+      depends: [],
+      image_name: "cpb-test:v1",
+      docker_file: path.join("..", "_assets", "cpb-test.dockerfile"),
+      secrets: [
+         { name: "npmrc", source: path.join(os.homedir(), ".npmrc") }
+      ],
+      options
+   })
 };
