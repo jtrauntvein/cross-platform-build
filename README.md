@@ -17,21 +17,22 @@ when invoked, will look for a file, makefile.js, that should export a single asy
     - [3.1.6. pull\_docker\_container()](#316-pull_docker_container)
     - [3.1.7. docker\_container()](#317-docker_container)
     - [3.1.8. docker\_build()](#318-docker_build)
-    - [3.1.9. mk\_dir()](#319-mk_dir)
-    - [3.1.10. copy\_file()](#3110-copy_file)
-    - [3.1.11. rsync()](#3111-rsync)
-    - [3.1.12. pdf\_latex()](#3112-pdf_latex)
-    - [3.1.13. svg\_to\_ico()](#3113-svg_to_ico)
-    - [3.1.14. svg\_to\_png()](#3114-svg_to_png)
-    - [3.1.15. rm()](#3115-rm)
-    - [3.1.16. wait\_for\_sync()](#3116-wait_for_sync)
-    - [3.1.17. rename()](#3117-rename)
-    - [3.1.18. write\_file()](#3118-write_file)
-    - [3.1.19. write\_c\_header()](#3119-write_c_header)
-    - [3.1.20. gitlab\_trigger\_pipeline](#3120-gitlab_trigger_pipeline)
-    - [3.1.21. touch()](#3121-touch)
-    - [3.1.22. make\_csecrets()](#3122-make_csecrets)
-    - [3.1.23. cmake\_configure()](#3123-cmake_configure)
+    - [3.1.9. docker\_run()](#319-docker_run)
+    - [3.1.10. mk\_dir()](#3110-mk_dir)
+    - [3.1.11. copy\_file()](#3111-copy_file)
+    - [3.1.12. rsync()](#3112-rsync)
+    - [3.1.13. pdf\_latex()](#3113-pdf_latex)
+    - [3.1.14. svg\_to\_ico()](#3114-svg_to_ico)
+    - [3.1.15. svg\_to\_png()](#3115-svg_to_png)
+    - [3.1.16. rm()](#3116-rm)
+    - [3.1.17. wait\_for\_sync()](#3117-wait_for_sync)
+    - [3.1.18. rename()](#3118-rename)
+    - [3.1.19. write\_file()](#3119-write_file)
+    - [3.1.20. write\_c\_header()](#3120-write_c_header)
+    - [3.1.21. gitlab\_trigger\_pipeline](#3121-gitlab_trigger_pipeline)
+    - [3.1.22. touch()](#3122-touch)
+    - [3.1.23. make\_csecrets()](#3123-make_csecrets)
+    - [3.1.24. cmake\_configure()](#3124-cmake_configure)
   - [3.2. Helper Functions](#32-helper-functions)
     - [3.2.1. pick\_dir\_targets()](#321-pick_dir_targets)
     - [3.2.2. subdir()](#322-subdir)
@@ -234,7 +235,37 @@ target will be built.
 * `options` (object, required): Must specify the `options` parameter (or an object derived from that parameter) that is passed
 to the exported function for your `makefile.js` script.
 
-#### 3.1.9. mk_dir()
+#### 3.1.9. docker_run()
+
+The async `docker_run()` function will execute a process within a docker container.  The parameters for this function
+must include the following:
+
+* `name` (string, required): Specifies the name for the target to be generated
+* `depends` (string[], required): Specifies the names of targets that must be built before this target can be built.
+* `image` (string, required): Specifies the name and tag for the docker image.
+* `entry_point_dir` (string, optional): Optionally specifies the directory within the container file system in which the 
+entry point will be executed.  Defaults to `/home` if not given.
+* `entry_point` (string, required): Specifies the name of the command to be run within the container.
+* `entry_point_args` (string[], optional): Specifies the collection of command line arguments that will be passed
+to the process within the container.
+* `interactive` (bool, optional): Set to true if the standard I/O for the container process should be directed toward
+the host's standard I/O.  Defaults to false.
+* `mounts` (object[], optional): Specifies the mount points within the container.  Each item must be an object with the
+following properties:
+   * `bind_mount` (bool, optional): Set to true if the source references a directory on the host.  If this value is false,
+   the source will expected to be a docker volume.
+   * `source` (string, required): Specifies the source directory on the host for a bind mount or the name of a docker
+   volume.
+   * `target` (string, required): Specifies the directory within the container where the mount will be placed.  This
+   must be a complete path (start with the root directory)
+   * `read_only` (bool, optional): Set to true (default is false) if the mounted path should be read-only.
+ * `env` (object, optional): Optionally specifies the names and values for environment variables that must be defined
+ within the container.  These will complement the environment variables stored in the container image.
+ * `options` (object, required): Must specify the `options` argument (or an object derieved from) passed to the 
+ `makefile.js` exported function
+
+
+#### 3.1.10. mk_dir()
 
 The mk_dir() function generates a target that will ensure the existence of a directory for a given path and will create any parent directories for that path as necessary.  The options for this function are as follows:
 
@@ -245,7 +276,7 @@ The mk_dir() function generates a target that will ensure the existence of a dir
 
 The return value from this function will be the object that was created to track the status of the target.
 
-#### 3.1.10. copy_file()
+#### 3.1.11. copy_file()
 
 The copy_file() function generates a target that will copy one or more files to a given directory and will also clone the created time and last modified time for the copied files.  The parameters for this function are as follows:
 
@@ -258,7 +289,7 @@ The copy_file() function generates a target that will copy one or more files to 
 
 The return value from this function will be the object that was created to track the target.
 
-#### 3.1.11. rsync()
+#### 3.1.12. rsync()
 
 The rsync() function will generate a target that will use the rsyncjs node module to mirror the contents of a destination directory with the contents of a source directory.  The parameters for this function are as follows:
 
@@ -273,7 +304,7 @@ The rsync() function will generate a target that will use the rsyncjs node modul
 
 The return value from this function will be the object used to track the target.
 
-#### 3.1.12. pdf_latex()
+#### 3.1.13. pdf_latex()
 
 The pdf_latex() function will generate a target that will invoke pdflatex command (provided by TexLive or MikTex depending upon the host OS) repeatedly, if needed,
 to generate a PDF output document and to resolve any reference or layout issues that requires the TeX command to be run again.  The parameters for this function are as follows:
@@ -287,7 +318,7 @@ to generate a PDF output document and to resolve any reference or layout issues 
 
 The return value for this function will be the object that was created to track the target.
 
-#### 3.1.13. svg_to_ico()
+#### 3.1.14. svg_to_ico()
 
 The svg_to_ico() function creates a target that will convert if needed an SVG file into an ICON format file.  This conversion will only take place if the dest file does not exist or is older than the source file.  The parameters for this function are as follows:
 
@@ -300,7 +331,7 @@ The svg_to_ico() function creates a target that will convert if needed an SVG fi
 
 The return value will be the object created to track the target.
 
-#### 3.1.14. svg_to_png()
+#### 3.1.15. svg_to_png()
 
 The svg_to_png() function creates a target that will convert if needed an SVG file to a PNG file with the given number of pixels.  It uses the sharp node module to do this work.  The parameters to this function are as follows:
 
@@ -315,7 +346,7 @@ The svg_to_png() function creates a target that will convert if needed an SVG fi
 
 The return value will be the object that was allocated to track the target.
 
-#### 3.1.15. rm()
+#### 3.1.16. rm()
 
 The rm() function will generate a target that will delete a specified file or directory from a given path.  The parameters for this function are as follows:
 
@@ -327,7 +358,7 @@ The rm() function will generate a target that will delete a specified file or di
 
 The return value for this function will be the object that is created to track the target.
 
-#### 3.1.16. wait_for_sync()
+#### 3.1.17. wait_for_sync()
 
 The wait_for_sync function will generate a target that will watch for two files: a reference and a target.
 The function will read the last-modified time of the reference file and will then watch for the target file.  When
@@ -347,7 +378,7 @@ it reports that the target build has failed. Can also be a function that is eval
 
 The return value for this function will be the object that is created to track the target.
 
-#### 3.1.17. rename()
+#### 3.1.18. rename()
 
 The rename() function will generate a target that will rename a specified file or directory.  This function expects the following parameters:
 
@@ -360,7 +391,7 @@ at source will be moved to that path.  Otherwise, the source object will be rena
 
 The return value will be the object used to track the target.
 
-#### 3.1.18. write_file()
+#### 3.1.19. write_file()
 
 This function generates a target that will write the provided content (string or buffer) to a file only if the content
 is different from the current file content.  This function expects the following parameters:
@@ -371,7 +402,7 @@ is different from the current file content.  This function expects the following
 * `contents (string | buffer, required)`: Specifies the content to be written.
 * `options (object, required)`: Must specify the `options` object passed to the makefile function by the utility.
 
-#### 3.1.19. write_c_header()
+#### 3.1.20. write_c_header()
 
 This function generates a target that will render the provided name/value pairs as preprocessor defines within a repetition guard.  The file will only be written if the generated content differs from existing.  It expects the following parameters:
 
@@ -382,7 +413,7 @@ This function generates a target that will render the provided name/value pairs 
 * `render (function, optional)`: Specifies a call-back function that will be passed each key/value pair and return the string that should be written for the macro definition.  By default, the return value from `JSON.stringify()` will be used.
 * `options (object, required)`: Must specify the options object passed to the makefile function invoked by the utility.
 
-#### 3.1.20. gitlab_trigger_pipeline
+#### 3.1.21. gitlab_trigger_pipeline
 
 This function generates a target that will interact with the GitLab API to trigger a build pipeline.  It expects the following
 parameters:
@@ -395,7 +426,7 @@ parameters:
 * `variables (object, optional)`: Specifies the environment variables that should be created for the CI/CD process.
 * `options (object, required)`: Must specify the options object that is passed to the makefile function when it is invoked by the utility.
 
-#### 3.1.21. touch()
+#### 3.1.22. touch()
 
 This function generates a target that will set the last modified time on one or more given files to match
 the current system time.  It expects the following parameters:
@@ -407,7 +438,7 @@ this target is executed
 * `options` (object, required): must specify the `options` object passed to the makefile function when 
 it is invoked by the utility.
 
-#### 3.1.22. make_csecrets()
+#### 3.1.23. make_csecrets()
 
 This function generates C or C++ code from a `secrets` object which is interpreted as map of strings that will
 declare the encrypted version of those keys using `AES-256-GCM`.  The purpose of the generated structure is
@@ -427,7 +458,7 @@ This function expects the following parameters:
    will be interpreted as a string.
 * `options` (object, required): should specify the options structure passed to the makefile entry point.
 
-#### 3.1.23. cmake_configure()
+#### 3.1.24. cmake_configure()
 
 This async function generates a target that will invoke the `cmake` command from a given directory
 and with a given generator and definitions.  It expects the following parameters:

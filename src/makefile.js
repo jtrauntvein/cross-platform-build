@@ -3,6 +3,7 @@ const PickDirTargets = require("./PickDirTargets");
 const WaitForSync = require("./WaitForSync");
 const MakeCSecrets = require("./MakeCSecrets");
 const { docker_build } = require("./DockerBuild");
+const { docker_run } = require("./DockerRun");
 const path = require("node:path");
 const os = require("node:os");
 
@@ -54,5 +55,16 @@ module.exports = async function(options) {
          { name: "npmrc", source: path.join(os.homedir(), ".npmrc") }
       ],
       options
-   })
+   });
+   await docker_run({
+      name: "src/test-docker_run",
+      depends: [
+         "src/test-docker_build"
+      ],
+      image: "cpb-test:v1",
+      entry_point: "echo",
+      entry_point_args: [ "hello $WORLD" ],
+      env: { "WORLD": "cruel-world" },
+      options
+   });
 };

@@ -22,6 +22,7 @@ const Touch = require("./Touch");
 const MakeCSecrets = require("./MakeCSecrets");
 const CMake = require("./CMake.js");
 const DockerBuild = require("./DockerBuild.js");
+const DockerRun = require("./DockerRun.js");
 
 module.exports = {
    Target,
@@ -51,6 +52,7 @@ module.exports = {
    touch: Touch.touch,
    make_csecrets: MakeCSecrets.make_csecrets,
    cmake_configure: CMake.cmake_configure,
-   docker_build: DockerBuild.docker_build 
+   docker_build: DockerBuild.docker_build,
+   docker_run: DockerRun.docker_run
 };
 
