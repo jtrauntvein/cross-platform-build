@@ -55,7 +55,7 @@ async function cmake_configure({
                   });
                   let effective_generator = generator;
                   if(!effective_generator) {
-                     effective_generator = (os.platform() === "linux" ? "make" : "nmake");
+                     effective_generator = (os.platform() === "linux" ? "Unix Makefiles" : "NMake Makefiles");
                   }
                   const process = child_process.spawn(
                      "cmake", 
