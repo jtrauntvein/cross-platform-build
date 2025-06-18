@@ -68,7 +68,7 @@ async function docker_run({
       if(mount.read_only) {
          mount_options.push("ro");
       }
-      argv.push(...mount_options.join(","));
+      argv.push("--mount", mount_options.join(","));
    });
    argv.push(image, entry_point, ...entry_point_args);
    return Execute.execute({
