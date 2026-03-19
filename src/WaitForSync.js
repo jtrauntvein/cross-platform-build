@@ -38,7 +38,8 @@ async function wait_for_sync({
                elapsed_base: Date.now(),
                elapsed_timer: null,
                reference_time: null,
-               matched: false
+               matched: false,
+               targets: (Array.isArray(effective_target) ? effective_target : [ effective_target ])
             };
             const check_interval = 100;
             fs.stat(effective_reference, (ref_err, reference_stats) => {
@@ -50,36 +51,38 @@ async function wait_for_sync({
                   state.elapsed_timer = setInterval(() => {
                      const current_time = Date.now();
                      const elapsed = (current_time - state.elapsed_base) / 1000;
-                     const target_stat = fs.statSync(effective_target, { throwIfNoEntry: false });
-                     if(target_stat && target_stat.mtime > state.reference_time)
-                     {
-                        if(effective_delay_after === 0)
-                        {
-                           options.logger.info(`target file is newer than the reference`)
+                     const all_matched = state.targets.every((the_target) => {
+                        const target_stat = fs.statSync(the_target, { throwIfNoEntry: false });
+                        let rtn = false;
+                        if(target_stat && target_stat.mtime > state.reference_time) {
+                           rtn = true;
+                        }   
+                        return rtn;
+                     });
+                     if(all_matched) {
+                        state.matched = true;
+                        if(effective_delay_after === 0) {
+                           options.logger.info(`targets are newer than reference`);
                            state.matched = true;
                            clearInterval(state.elapsed_timer);
                            accept(true);
                         }
-                        else
-                        {
-                           if(!state.matched)
-                           {
+                        else {
+                           if(!state.matched) {
                               state.matched = true;
-                              options.logger.info(`target file is newer than the reference: waiting for ${effective_delay_after} seconds`);
+                              options.logger.info(`${name} targets are newer than reference`);
                               state.elapsed_base = Date.now();
                            }
-                           if(elapsed > effective_delay_after)
-                           {
+                           if(elapsed > effective_delay_after) {
+                              options.logger.info(`${name} wait_for_synch delay complete`)
                               clearInterval(state.elapsed_timer);
-                              options.logger.info(`${name} wait_for_synch delay is complete`);
                               accept(true);
                            }
                         }
                      }
-                     else if(!state.matched && elapsed > effective_timeout)
-                     {
+                     else if(!state.matched && elapsed > effective_timeout) {
                         clearInterval(state.elapsed_timer);
-                        reject(Error("timed out waiting for the target to update"));
+                        reject(Error(`timed out waiting for targets to update`));
                      }
                   }, check_interval);
                }
