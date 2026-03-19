@@ -12,6 +12,7 @@ async function execute() {
    // parse the command line
    parser.option("-f, --file", "Specifies the makefile name", "makefile.js");
    parser.option("-l, --log-level", "Specifies the log level", "info");
+   parser.argument("[targets...]", "Specifies the targets to be built");
    await parser.parseAsync(process.argv);
    const project_file = parser.opts().file;
    let targets = parser.args;
