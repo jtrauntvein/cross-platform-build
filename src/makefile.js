@@ -28,7 +28,11 @@ module.exports = async function(options) {
       name: "src/wait-sync-test",
       depends: [ "src/WaitForSync.js.h" ],
       reference: "WaitForSync.js",
-      target: "WaitForSync.js.h",
+      target: [
+         "WaitForSync.js.h",
+         "WaitForSync.js.h"
+      ],
+      timeout: 1,
       delay_after: 10,
       options
    });
