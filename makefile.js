@@ -32,6 +32,17 @@ module.exports = async function(options) {
       height: 128,
       options
    });
+   await SvgToPng.svg_to_png({
+      name: "logview256.png",
+      depends: [
+         "copy-to-temp"
+      ],
+      source: "logview.svg",
+      dest: path.join(os.homedir(), "temp", "logview256.png"),
+      width: 256,
+      height: 256,
+      options
+   });
    await tools.rm({
       name: "rm-temp",
       path: rsync_dest,

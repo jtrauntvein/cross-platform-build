@@ -341,7 +341,7 @@ The svg_to_png() function creates a target that will convert if needed an SVG fi
 * dest (string, required): Specifies the path of the output .ico file. Can also be a function that is evaluated at the time when the target is built.
 * width (number, required): Specifies the maximum width of the output file in pixels. Can also be a function that is evaluated at the time when the target is built.
 * height (number, required): Specifies the maximum height of the output file in pixels. Can also be a function that is evaluated at the time when the target is built.
-* resize_options (object, optional): Specifies other options that should be passed to the sharp resize() function. Can also be a function that is evaluated at the time when the target is built.
+* resize_options (object, optional): Specifies other options that should be passed to the SVG conversion function. Can also be a function that is evaluated at the time when the target is built.
 * options (object, required): Specifies the options parameter passed to the makefile.js entry-point.
 
 The return value will be the object that was allocated to track the target.
