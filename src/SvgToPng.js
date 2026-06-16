@@ -1,7 +1,6 @@
 const Target = require("./Target");
-const sharp = require("sharp");
 const fs = require("node:fs");
-
+const { Resvg } = require("@resvg/resvg-js");
 
 /**
  * 
@@ -45,17 +44,19 @@ async function svg_to_png({
          let proceed = true;
          if(source_stat && dest_stat)
             proceed = (dest_stat.mtime < source_stat.mtime);
-         if(proceed)
-         {
-            const sharp_options = {
-               fit: "contain",
-               background: {r:0, g:0, b:0, alpha:0},  // white - transparent
-               ...effective_resize_options
+         if(proceed) {
+            const resvg_options = {
+               fitTo: {
+                  mode: (effective_width > effective_height ? "height" : "width"),
+                  value: (effective_width > effective_height ? effective_width : effective_height)
+               },
+               ...resize_options
             };
-            const buffer = await sharp(effective_source).resize(effective_width, effective_height, sharp_options).png({
-               compressionLevel: 0
-            }).toBuffer();
-            await fs.promises.writeFile(effective_dest, buffer);
+            const input = await fs.promises.readFile(effective_source);
+            const resvg = new Resvg(input, resvg_options);
+            const rendered = resvg.render();
+            const png = rendered.asPng();
+            await fs.promises.writeFile(effective_dest, png);
          }
          return true;
       }
