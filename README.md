@@ -259,6 +259,12 @@ following properties:
    * `target` (string, required): Specifies the directory within the container where the mount will be placed.  This
    must be a complete path (start with the root directory)
    * `read_only` (bool, optional): Set to true (default is false) if the mounted path should be read-only.
+ * `ports` (object[], optional): Specifies the mapping of internal interfaces and ports to external ports.  Each object has the following
+ properties:
+   * `host_interface` (string, optional): Optionally specifies the container interface address
+   * `host_port` (number, required): Specifies the container port to map
+   * `publish_port` (number, required): Specifies the external port to publish
+   * `protocol` (string, optional): Optionally specifies the service protocol to export (udp or tcp)
  * `env` (object, optional): Optionally specifies the names and values for environment variables that must be defined
  within the container.  These will complement the environment variables stored in the container image.
  * `options` (object, required): Must specify the `options` argument (or an object derieved from) passed to the 
