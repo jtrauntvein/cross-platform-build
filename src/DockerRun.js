@@ -11,6 +11,14 @@ const Execute = require("./Execute.js");
  * @property {bool} read_only Set to true if the mounted data should not be changed.
  */
 /**
+ * @typedef DockerRunPortType Describes an exposed port from the docker container
+ * @property {string=""} host_interface Specifies the container network interface to which the server will be bound
+ * @property {number} host_port Specifies the container internal port
+ * @property {number} publish_port Specifies the port that will be exposed
+ * @property {string} protocol Specifies the type of port that is published
+ */
+
+/**
  * @typedef DockerRunOptionsType Describes the option names that can be passed to the `docker_run()` 
  * target function.
  * @property {string} name Specifies the name of the target to be generated
@@ -26,6 +34,7 @@ const Execute = require("./Execute.js");
  * directed to the host.
  * @property {DockerRunMountType[]?} mounts Specifies the mount points for the container.  Defaults to an
  * empty list.
+ * @property {DockerRunPortType[]?} ports Specifies the ports exposed by the container.  Defaults to an empty list
  * @property {object?} env Specifies an object that will define environment variables within the container
  * before the entry point is executed.  The keys of this object will be environment variable names whereas
  * the values will be rendered as environment variable value strings.
@@ -46,6 +55,7 @@ async function docker_run({
    entry_point_args = [],
    interactive = false,
    mounts = [],
+   ports = [],
    env = {},
    options
 }) {
@@ -70,6 +80,17 @@ async function docker_run({
       }
       argv.push("--mount", mount_options.join(","));
    });
+   ports.forEach((port) => {
+      const port_options = [ "-p " ];
+      if(port.host_interface !== undefined) {
+         port_options.push(port.host_interface, ":");
+      }
+      port_options.push(port.host_port.toString(), ":", port.publish_port.toString());
+      if(port.protocol !== undefined) {
+         port_options.push("/", port.protocol);
+      }
+      argv.push(port_options.join(""));
+   })
    argv.push(image, entry_point, ...entry_point_args);
    return Execute.execute({
       name,
