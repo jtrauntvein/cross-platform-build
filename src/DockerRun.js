@@ -32,6 +32,7 @@ const Execute = require("./Execute.js");
  * process.
  * @property {bool} interactive Set to true (defaults to false) if the standard I/O for the container should be 
  * directed to the host.
+ * @property {bool?} detached Set to true if the container should run detached from the shell
  * @property {DockerRunMountType[]?} mounts Specifies the mount points for the container.  Defaults to an
  * empty list.
  * @property {DockerRunPortType[]?} ports Specifies the ports exposed by the container.  Defaults to an empty list
@@ -54,6 +55,7 @@ async function docker_run({
    entry_point = "bin/bash",
    entry_point_args = [],
    interactive = false,
+   detached = false,
    mounts = [],
    ports = [],
    env = {},
@@ -93,8 +95,11 @@ async function docker_run({
          port_options.push(`"${"/", port.protocol}"`);
       }
       argv.push(port_options.join(""));
-   })
-   argv.push(image);
+   });
+   if(detached) {
+      argv.push("-d");
+   }
+   argv.push(`"${image}"`);
    if(entry_point) {
       argv.push(entry_point, ...entry_point_args)
    }

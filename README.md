@@ -250,6 +250,7 @@ entry point will be executed.  Defaults to `/home` if not given.
 to the process within the container.
 * `interactive` (bool, optional): Set to true if the standard I/O for the container process should be directed toward
 the host's standard I/O.  Defaults to false.
+* `detached` (bool, optional): Set to true if the container should run detached from the starting shell
 * `mounts` (object[], optional): Specifies the mount points within the container.  Each item must be an object with the
 following properties:
    * `bind_mount` (bool, optional): Set to true if the source references a directory on the host.  If this value is false,
