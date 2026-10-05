@@ -59,8 +59,11 @@ async function docker_run({
    env = {},
    options
 }) {
-   const argv = [ "run", "--rm", "--workdir", entry_point_dir ];
+   const argv = [ "run", "--rm" ];
    const env_keys = Object.keys(env);
+   if(entry_point_dir) {
+      argv.push("--workdir", entry_point_dir);
+   }
    if(interactive) {
       argv.push("-it");
    }
@@ -87,11 +90,14 @@ async function docker_run({
       }
       port_options.push(port.host_port.toString(), ":", port.publish_port.toString());
       if(port.protocol !== undefined) {
-         port_options.push("/", port.protocol);
+         port_options.push(`"${"/", port.protocol}"`);
       }
       argv.push(port_options.join(""));
    })
-   argv.push(image, entry_point, ...entry_point_args);
+   argv.push(image);
+   if(entry_point) {
+      argv.push(entry_point, ...entry_point_args)
+   }
    return Execute.execute({
       name,
       depends,
