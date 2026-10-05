@@ -86,7 +86,7 @@ async function docker_run({
       argv.push("--mount", mount_options.join(","));
    });
    ports.forEach((port) => {
-      const port_options = [ "-p " ];
+      const port_options = [ ];
       if(port.host_interface !== undefined) {
          port_options.push(port.host_interface, ":");
       }
@@ -94,12 +94,12 @@ async function docker_run({
       if(port.protocol !== undefined) {
          port_options.push(`"${"/", port.protocol}"`);
       }
-      argv.push(port_options.join(""));
+      argv.push("-p", port_options.join(""));
    });
    if(detached) {
       argv.push("-d");
    }
-   argv.push(`"${image}"`);
+   argv.push(image);
    if(entry_point) {
       argv.push(entry_point, ...entry_point_args)
    }
